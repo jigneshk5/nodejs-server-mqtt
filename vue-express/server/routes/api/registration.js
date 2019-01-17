@@ -2,10 +2,10 @@ const express = require('express');
 const mongodb = require('mongodb');
 var Client = require('strong-pubsub');
 var Adapter = require('strong-pubsub-mqtt');
+var db = require('../../db');
+let i=1;
 const router = express.Router();
-let i=0;
 var client = new Client({host: 'test.mosquitto.org', port: 1883}, Adapter);
-var sqlite3 = require('sqlite3').verbose();
 // var db = new sqlite3.Database(':memory:');
  
 // db.serialize(function() {
@@ -29,21 +29,26 @@ client.on('message', function(topic, msg) {
 
 //Get post
 
-let userDB = new sqlite3.Database("./server/db/registrationDB.db", 
-sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, 
-(err) => { 
-  if(!err){
-  console.log('Connected to the Registration database.');
-  }
-});
-
-
 //let stmt = userDB.run(`select * from langs`);
 
 
 router.get('/', async (req, res) => {
-    const carData = await loadCarData();
-    res.send(await carData.find({}).toArray());
+    // const carData = await loadCarData();
+    // res.send(await carData.find({}).toArray());
+    var x=[];
+    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od FROM user`;
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        throw err;
+      }
+      rows.forEach((row) => {
+        var rowObj = Object.assign({},[row.cn,row.ph,row.mail,row.RFID,row.ad,row.VIN,row.MAC,row.topic,row.ACTIVE,row.vt
+          ,row.ft,row.fl,row.fc,row.MILAGE,row.dc,row.du,row.od]);
+        x.push(rowObj);
+      });
+      res.send(x);
+});
   });
 //Add post
 router.post('/', async (req, res) => {
@@ -54,14 +59,13 @@ router.post('/', async (req, res) => {
   //   mac : req.body.mac,
   //   vin: req.body.carnum
   // })
-  if(i==5){
-  userDB.run(`CREATE TABLE [Registration] (  
-    [CustomerId] INTEGER PRIMARY KEY NOT NULL,  
+  db.run(`CREATE TABLE IF NOT EXISTS user(  
+    [CustomerId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,  
     [CustomerName] VARCHAR(50) NOT NULL,
-	[PHONE] VARCHAR(50) NOT NULL,
+	[PHONE] VARCHAR(50) NOT NULL UNIQUE,
 	[EMAIL] VARCHAR(50) NULL,
 	[ADDRESS] VARCHAR(50) NOT NULL,
-	[RFID] INTEGER NOT NULL,
+	[RFID] INTEGER NOT NULL UNIQUE,
     [VIN] INTEGER  NOT NULL, 
 	[MAC] VARCHAR(50) NOT NULL,
     [TOPIC] VARCHAR(50) NOT NULL,
@@ -71,39 +75,37 @@ router.post('/', async (req, res) => {
 	[FUEL_LEVEL] VARCHAR(50) NOT NULL,
 	[FUEL_CAPACITY] VARCHAR(50) NOT NULL,
 	[MILAGE] DECIMAL(5,2) NOT NULL,
-    [DateOfCreation] DATE NOT NULL,
-	[DateOfUpdation] DATE NOT NULL,
+    [DateOfCreation] DATETIME NOT NULL,
+	[DateOfUpdation] DATETIME NOT NULL,
 	[OtherData] VARCHAR(200) NULL
 )`,(err)=>{
+  if(err){
     console.log(err.message);
+  }
+    // if(!err){
+    //   console.log("table created successfully");
+    // }
   });
-}
-i++;
-let values = [i, req.body.CustomerName,req.body.PHONE, req.body.EMAIL,req.body.ADDRESS,req.body.RFID,
-  req.body.VIN,req.body.MAC,req.body.TOPIC,req.body.ACTIVE,req.body.VEHICLE_TYPE,req.body.FUEL_TYPE,
-  req.body.FUEL_LEVEL,req.body.FUEL_CAPACITY,req.body.MILAGE,new Date(),new Date(),req.body.OtherData];
-  let placeholders = values.map((value) => '(?)').join(',');
-let sql = 'INSERT INTO Registration VALUES ' + placeholders;
+// i++;
+let records = [req.body.CustomerName,req.body.PHONE, req.body.EMAIL,req.body.ADDRESS,req.body.RFID,
+  req.body.VIN,req.body.MAC,req.body.topic,req.body.ACTIVE,req.body.VEHICLE_TYPE,req.body.FUEL_TYPE,
+  req.body.FUEL_LEVEL,req.body.FUEL_CAPACITY,req.body.MILAGE,new Date().toLocaleString(),new Date().toLocaleString(),req.body.OtherData];
+  let placeholders = records.map((value) => '?').join(',');
+let sql = 'INSERT INTO user(CustomerName,PHONE,EMAIL,ADDRESS,RFID,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE,FUEL_TYPE,FUEL_LEVEL,FUEL_CAPACITY,MILAGE,DateOfCreation,DateOfUpdation,OtherData) VALUES'+'('+placeholders+')';
  
 // output the INSERT statement
 console.log(sql);
  
-userDB.run(sql, languages, function(err) {
+db.run(sql, records, function(err) {
   if (err) {
     return console.error(err.message);
   }
   console.log(`Rows inserted ${this.changes}`);
 });
-//   userDB.each("SELECT name FROM LANGS", function(err, row) {
-//     console.log(row.name);
-// });
-    // userDB.serialize(function(){
-
-    // })
 
   client.publish(req.body.topic,"ADDED to DB");
   res.status(201).send({"status":"ok"});
-  userDB.close();
+ // db.close();
 });
 
 
