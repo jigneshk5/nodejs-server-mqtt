@@ -12,15 +12,13 @@ app.use(cors());
 const RegData = require('./routes/api/registration');
 const wifiList = require('./routes/api/wifiList');
 //const connectedWifi = require('./routes/api/connectedWifi');
-//const wifi = require('./routes/api/wifi');
 
 app.use('/api/registration',RegData);
-//app.use('/api/wifi', wifi);
 app.use('/api/wifiList', wifiList);
 //app.use('/api/connectedWifi', connectedWifi);
 
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 2000;
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}!`);
