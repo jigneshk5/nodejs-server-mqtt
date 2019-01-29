@@ -11,10 +11,12 @@ app.use(cors());
 
 const RegData = require('./routes/api/registration');
 const wifiList = require('./routes/api/wifiList');
+//const wifiAP = require('./routes/api/wifiAP');
 //const connectedWifi = require('./routes/api/connectedWifi');
 
 app.use('/api/registration',RegData);
 app.use('/api/wifiList', wifiList);
+//app.use('/api/wifiAP', wifiAP);
 //app.use('/api/connectedWifi', connectedWifi);
 
 

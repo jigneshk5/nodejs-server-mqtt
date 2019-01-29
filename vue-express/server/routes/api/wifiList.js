@@ -2,7 +2,7 @@ const express = require('express');
 var db = require('../../db');
 const router = express.Router();
 var wifi = require("node-wifi");
-
+var ssids=[];
 // Initialize wifi module
 // Absolutely necessary even to set interface to null
 wifi.init({
@@ -11,29 +11,21 @@ wifi.init({
 
 // Scan networks
 wifi.scan(function(err, networks) {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log(networks);
-    /*
-        networks = [
-            {
-              ssid: '...',
-              bssid: '...',
-              mac: '...', // equals to bssid (for retrocompatibility)
-              channel: <number>,
-              frequency: <number>, // in MHz
-              signal_level: <number>, // in dB
-              quality: <number>, // same as signal level but in %
-              security: 'WPA WPA2' // format depending on locale for open networks in Windows
-              security_flags: '...' // encryption protocols (format currently depending of the OS)
-              mode: '...' // network mode like Infra (format currently depending of the OS)
-            },
-            ...
-        ];
-        */
+  var j=0;
+  if (err) throw err;
+   else {
+     //console.log(networks);
+     for(var i in networks){
+      if(networks[i].ssid.substr(0,3) == 'obd')
+        ssids[j]= networks[i].ssid;
+        if(ssids[j]!= null){
+          j++;
+        }
+     }
+     console.log(ssids);
   }
 });
+
 
 router.get('/',(req,res)=>{
     res.send('WiFi List');
