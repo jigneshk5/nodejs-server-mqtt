@@ -23,248 +23,387 @@ function rowObj(row){
 
 router.get('/', async (req, res) => {
   var x=[];
+  let a=[];
+  let b = [];
+  let data = [];
   var y;
+  let j=0;
   let query = [req.query.name,req.query.phone,req.query.mail,req.query.rfid,
     req.query.address,req.query.vin,req.query.mac,req.query.topic,
     req.query.active,req.query.vt,req.query.ft,req.query.fl,req.query.fc,
     req.query.milage,req.query.dc,req.query.du,req.query.con];
-
-  // if(query[0] && query[1]){
-  //   let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-  //   FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-  //   WHERE cn = ? AND ph = ? COLLATE NOCASE`;
-  //   db.get(sql, [query[0],query[1]], (err, row) => {
-  //     if (err) {
-  //       res.status(400).json({"error":err.message});
-  //       return;
-  //     }
-  //       y = rowObj(row);
-  //       res.send(y);
-  //     });
-  //   }
-
-  if(query[0]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE CustomerName = ? COLLATE NOCASE`;
-    db.get(sql, ['Samuel'], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-        y = rowObj(row);
-        res.send(y);
-      });
-    }
-  else if(query[1]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE PHONE = ? COLLATE NOCASE`;
-    db.get(sql, [query[1]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-  else if(query[2]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE EMAIL = ? COLLATE NOCASE`;
-    db.get(sql, [query[2]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-  else if(query[3]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE RFID = ? COLLATE NOCASE`;
-    db.get(sql, [query[3]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-  else if(query[4]){
-  let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-  FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-  WHERE ad = ? COLLATE NOCASE`;
-  db.get(sql, [query[4]], (err, row) => {
-    if (err) {
-      res.status(400).json({"error":err.message});
-      return;
-    }
-    y = rowObj(row);
-      res.send(y);
-    });
-  }
-  else if(query[5]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE VIN = ? COLLATE NOCASE`;
-    db.get(sql, [query[5]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-  else if(query[6]){
-  let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-  FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-  WHERE MAC = ? COLLATE NOCASE`;
-  db.get(sql, [query[6]], (err, row) => {
-    if (err) {
-      res.status(400).json({"error":err.message});
-      return;
-    }
-    y = rowObj(row);
-      res.send(y);
-    });
-  }
-else if(query[7]){
-  let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-  FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-  WHERE topic = ? COLLATE NOCASE`;
-  db.get(sql, [query[7]], (err, row) => {
-    if (err) {
-      res.status(400).json({"error":err.message});
-      return;
-    }
-    y = rowObj(row);
-      res.send(y);
-    });
-  }
-  else if(query[8]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE ACTIVE = ? COLLATE NOCASE`;
-    db.get(sql, [query[8]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-  else if(query[9]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE vt = ? COLLATE NOCASE`;
-    db.get(sql, [query[9]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-  else if(query[10]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE ft = ? COLLATE NOCASE`;
-    db.get(sql, [query[10]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-  else if(query[11]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE fl = ? COLLATE NOCASE`;
-    db.get(sql, [query[11]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-  else if(query[12]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE fc = ? COLLATE NOCASE`;
-    db.get(sql, [query[12]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-  else if(query[13]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE MILAGE = ? COLLATE NOCASE`;
-    db.get(sql, [query[13]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-    else if(query[14] && query[14].substr(0,9)){
-      let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-      FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-      WHERE dc = ? COLLATE NOCASE`;
-      db.get(sql, [query[14]], (err, row) => {
-        if (err) {
-          res.status(400).json({"error":err.message});
-          return;
+  Array.prototype.checkAll = function(v) {
+    var i, n = this.length;
+    for (i = 0; i < n; ++i) {
+        if(this[i] == v){
+          return true;
         }
+    }
+  };
+  function getSqlQuery(arr){
+    let res = [];
+    for(let i=0;i<arr.length;i++){
+      if(arr[i]==0)
+        res[i]='cn';
+      if(arr[i]==1)
+        res[i]='ph';
+      if(arr[i]==2)
+        res[i]='mail';
+      if(arr[i]==3)
+        res[i]='RFID';
+      if(arr[i]==4)
+        res[i]='ad';
+      if(arr[i]==5)
+        res[i]='VIN';
+      if(arr[i]==6)
+        res[i]='MAC';
+      if(arr[i]==7)
+        res[i]='topic';
+      if(arr[i]==8)
+        res[i]='ACTIVE';
+      if(arr[i]==9)
+        res[i]='vt';
+      if(arr[i]==10)
+        res[i]='ft';
+      if(arr[i]==11)
+        res[i]='fl';
+      if(arr[i]==12)
+        res[i]='fc';
+      if(arr[i]==13)
+        res[i]='MILAGE';
+      if(arr[i]==14)
+        res[i]='dc';
+      if(arr[i]==15)
+        res[i]='du';
+      if(arr[i]==16)
+        res[i]='con';
+    }
+    return res;
+  }
+
+  if(query[0] || query[1] || query[2] || query[3]|| query[4] || query[5]||query[6]
+    || query[7] || query[8] || query[9] || query[10] || query[11] || query[12] || 
+    query[13] || query[14] || query[15] || query[16]){
+    
+    for(let i=0;i<=16;i++){
+      if(query[i]!=null){
+        data[j]=query[i];
+        a[j]=i;
+        j++;
+      }
+    }
+    b = getSqlQuery(a);
+    let placeholders = b.map((value) => value+' = ? ').join('AND ');
+    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,
+    topic,ACTIVE,VEHICLE_TYPE vt,FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,
+    MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM 
+    user WHERE ${placeholders}COLLATE NOCASE`;
+    console.log(sql);
+    console.log(data);
+    db.get(sql, [data], (err, row) => {
+      if (err) {
+        res.status(400).json({"error":err.message});
+        return;
+      }
+      if (row==null) {
+        res.status(400).send("Data not in db");              //Bad Request
+        return;
+      }
         y = rowObj(row);
         res.send(y);
-        });
-      }
-  else if(query[15] && query[15].substr(0,9)){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE du like = ? COLLATE NOCASE`;
-    db.get(sql, [query[15]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
       });
     }
-  else if(query[16]){
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
-    FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
-    WHERE con = ? COLLATE NOCASE`;
-    db.get(sql, [query[16]], (err, row) => {
-      if (err) {
-        res.status(400).json({"error":err.message});
-        return;
-      }
-      y = rowObj(row);
-      res.send(y);
-      });
-    }
-  else {
+
+//   if(query[0] && query[1]==null){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE cn = ? COLLATE NOCASE`;
+//     db.get(sql, [query[0]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if(err){
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//         y = rowObj(row);
+//         res.send(y);
+//     });
+//   }
+//   else if(query[1]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE ph = ? COLLATE NOCASE`;
+//     db.get(sql, [query[1]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//   else if(query[2]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE mail = ? COLLATE NOCASE`;
+//     db.get(sql, [query[2]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//   else if(query[3]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE RFID = ? COLLATE NOCASE`;
+//     db.get(sql, [query[3]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//   else if(query[4]){
+//   let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//   FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//   WHERE ad = ? COLLATE NOCASE`;
+//   db.get(sql, [query[4]], (err, row) => {
+//     if (row==null) {
+//       res.status(400).send("Data not in db");              //Bad Request
+//       return;
+//     }
+//     if (err) {
+//       res.status(400).json({"error":err.message});
+//       return;
+//     }
+//     y = rowObj(row);
+//       res.send(y);
+//     });
+//   }
+//   else if(query[5]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE VIN = ? COLLATE NOCASE`;
+//     db.get(sql, [query[5]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//   else if(query[6]){
+//   let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//   FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//   WHERE MAC = ? COLLATE NOCASE`;
+//   db.get(sql, [query[6]], (err, row) => {
+//     if (row==null) {
+//       res.status(400).send("Data not in db");              //Bad Request
+//       return;
+//     }
+//     if (err) {
+//       res.status(400).json({"error":err.message});
+//       return;
+//     }
+//     y = rowObj(row);
+//       res.send(y);
+//     });
+//   }
+// else if(query[7]){
+//   let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//   FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//   WHERE topic = ? COLLATE NOCASE`;
+//   db.get(sql, [query[7]], (err, row) => {
+//     if (row==null) {
+//       res.status(400).send("Data not in db");              //Bad Request
+//       return;
+//     }
+//     if (err) {
+//       res.status(400).json({"error":err.message});
+//       return;
+//     }
+//     y = rowObj(row);
+//       res.send(y);
+//     });
+//   }
+//   else if(query[8]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE ACTIVE = ? COLLATE NOCASE`;
+//     db.get(sql, [query[8]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//   else if(query[9]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE vt = ? COLLATE NOCASE`;
+//     db.get(sql, [query[9]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//   else if(query[10]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE ft = ? COLLATE NOCASE`;
+//     db.get(sql, [query[10]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//   else if(query[11]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE fl = ? COLLATE NOCASE`;
+//     db.get(sql, [query[11]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//   else if(query[12]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE fc = ? COLLATE NOCASE`;
+//     db.get(sql, [query[12]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//   else if(query[13]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE MILAGE = ? COLLATE NOCASE`;
+//     db.get(sql, [query[13]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//     else if(query[14]){
+//       let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//       FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//       WHERE dc = ? COLLATE NOCASE`;
+//       db.get(sql, [query[14]], (err, row) => {
+//         if (row==null) {
+//           res.status(400).send("Data not in db");              //Bad Request
+//           return;
+//         }
+//         if (err) {
+//           res.status(400).json({"error":err.message});
+//           return;
+//         }
+//         y = rowObj(row);
+//         res.send(y);
+//         });
+//       }
+//   else if(query[15]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE du like '%, ?%' or du like '%, ?' COLLATE NOCASE`;
+//     db.get(sql, [query[15]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+//   else if(query[16]){
+//     let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+//     FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
+//     WHERE con = ? COLLATE NOCASE`;
+//     db.get(sql, [query[16]], (err, row) => {
+//       if (row==null) {
+//         res.status(400).send("Data not in db");              //Bad Request
+//         return;
+//       }
+//       if (err) {
+//         res.status(400).json({"error":err.message});
+//         return;
+//       }
+//       y = rowObj(row);
+//       res.send(y);
+//       });
+//     }
+  if(query.checkAll(null)) {
   let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,
   topic,ACTIVE,VEHICLE_TYPE vt,FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,
   MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con 
@@ -286,8 +425,6 @@ else if(query[7]){
 
 //Get user by id
 router.get('/:id', async (req, res) => {
-  // const carData = await loadCarData();
-  // res.send(await carData.find({}).toArray());
   var x=[];
   let CustomerId = req.params.id;
   let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
