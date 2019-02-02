@@ -1,0 +1,88 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "description": "This is the documentation for our Mqtt server api",
+      "version": "1.0.0",
+      "title": "OBD Server API"
+    },
+    "host": "localhost:2000",
+    "basePath": "/api/registration",
+    "produces": ["application/json"],
+    "schemes": [
+      "http"
+    ],
+    "paths":{
+        "/": {
+            "get": {
+              "description": "Returns all users registred with our System",
+              "produces": [
+                "application/json"
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully got users",
+                  "schema": {
+                    "type": "array",
+                    "items": [{}]
+                  }
+                }
+              }
+            }
+          },
+          "/{userId}": {
+            "get": {
+              "description": "Get a user registred by passing the userId",
+              "produces": [
+                "application/json"
+              ],
+              "parameters": [
+                {
+                    "name": "userId",
+                    "in": "path",
+                    "description": "ID of the user",
+                    "required": true,
+                    "type": "integer"
+                  }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully got the user",
+                  "schema": {
+                    "type": "array",
+                    "items": [{}]
+                  }
+                }
+              }
+            }
+          },
+          "/edit/{userId}": {
+            "put": {
+              "description": "Edit user details",
+              "consumes": [
+                "application/json"
+              ],
+              "produces": [
+                "application/json"
+              ],
+              "parameters": [
+                {
+                    "name": "userId",
+                    "in": "path",
+                    "description": "ID of the user",
+                    "required": true,
+                    "type": "integer"
+                  }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully edited the user",
+                  "schema": {
+                    "type": "array",
+                    "items": [{}]
+                  }
+                }
+              }
+            }
+          }
+    }
+  }
