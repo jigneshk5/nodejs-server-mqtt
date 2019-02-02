@@ -100,8 +100,8 @@ router.get('/', async (req, res) => {
     user WHERE ${placeholders}COLLATE NOCASE`;
     console.log(sql);
     console.log(data);
-    db.get(sql, data, (err, row) => {
-      if (row==null) {
+    db.all(sql, data, (err, rows) => {
+      if (rows==null) {
         res.status(400).send("Data not in db");              //Bad Request
         return;
       }
@@ -109,8 +109,12 @@ router.get('/', async (req, res) => {
         res.status(400).json({"error":err.message});
         return;
       }
-        y = rowObj(row);
-        res.send(y);
+      rows.forEach((row) => {
+        var rowObj = Object.assign({},[row.cn,row.ph,row.mail,row.RFID,row.ad,row.VIN,row.MAC,row.topic,row.ACTIVE,row.vt
+          ,row.ft,row.fl,row.fc,row.MILAGE,row.dc,row.du,row.od,row.con]);
+          x.push(rowObj);
+          });
+          res.send(x);
       });
     }
   else {
