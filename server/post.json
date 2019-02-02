@@ -1,0 +1,91 @@
+{
+"/": {
+    "post": {
+      "description": "Post a user to the DB",
+      "produces": [
+        "application/json"
+      ],
+      "requestBody":{
+        "description": "Enter user details",
+        "content": {
+            "application/x-www-form-urlencoded":
+            {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                      "CustomerName": {
+                        "type": "string"
+                      },
+                      "PHONE":{
+                        "type": "string"
+                      },
+                      "EMAIL":{
+                        "type": "string"
+                      },
+                      "ADDRESS":{
+                        "type": "string"
+                      },
+                      "RFID":{
+                        "type": "integer"
+                      },
+                      "VIN":{
+                        "type": "string"
+                      },
+                      "MAC":{
+                        "type": "string"
+                      },
+                      "topic":{
+                        "type": "string"
+                      },
+                      "ACTIVE":{
+                        "type": "integer"
+                      },
+                      "VEHICLE_TYPE":{
+                        "type": "string"
+                      },
+                      "FUEL_TYPE":{
+                        "type": "string"
+                      },
+                      "FUEL_LEVEL":{
+                        "type": "string"
+                      },
+                      "FUEL_CAPACITY":{
+                        "type": "string"
+                      },
+                      "MILAGE":{
+                        "type": "string"
+                      },
+                      "DateOfCreation":{
+                        "type": "string"
+                      },
+                      "DateOfUpdation":{
+                        "type": "string"
+                      },
+                      "OtherData":{
+                        "type": "string"
+                      },
+                      "CompanyName":{
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "CustomerName","PHONE","EMAIL","ADDRESS","RFID","VIN","MAC","topic","ACTIVE",
+                      "VEHICLE_TYPE","FUEL_TYPE","FUEL_LEVEL","FUEL_CAPACITY","MILAGE","DateOfCreation",
+                      "DateOfUpdation","OtherData","CompanyName"
+                    ]
+                  }
+                }
+            }
+      },
+      "responses": {
+        "201": {
+          "description": "Successfully added the user",
+          "schema": {
+            "type": "array",
+            "items": [{}]
+          }
+        }
+      }
+    }
+  }
+}
