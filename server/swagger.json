@@ -190,7 +190,7 @@
               "requestBody":{
                 "description": "Enter user details",
                 "content": {
-                    "application/x-www-form-urlencoded":
+                    "application/json":
                     {
                         "schema": {
                             "type": "object",
@@ -270,7 +270,7 @@
               }
             }
           },
-          "/{userId}": {
+          "/api/registration/{userId}": {
             "get": {
               "description": "Get a user registred by passing the userId",
               "produces": [
@@ -298,12 +298,9 @@
               }
             }
           },
-          "/edit/{userId}": {
+          "/api/registration/edit/{userId}": {
             "put": {
               "description": "Edit user details",
-              "consumes": [
-                "application/json"
-              ],
               "produces": [
                 "application/json"
               ],
@@ -321,7 +318,7 @@
               "requestBody":{
                 "description": "Edit user details",
                 "content": {
-                    "application/x-www-form-urlencoded":
+                    "application/json":
                     {
                         "schema": {
                             "type": "object",
@@ -381,10 +378,15 @@
                                 "type": "string"
                                 }
                               }
-                            }
+                            },
+                        "encoding": {
+                          "payload": {
+                            "contentType": "application/json"
                           }
                         }
-                      },
+                      }
+                    }
+                  },
               "responses": {
                 "200": {
                   "description": "Successfully edited the user",
