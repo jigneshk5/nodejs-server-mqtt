@@ -21,7 +21,7 @@ function rowObj(row){
 }
 //Get post
 
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
   var x=[];
   let a=[];
   let b = [];
@@ -138,7 +138,7 @@ router.get('/', async (req, res) => {
 });
 
 //Get user by id
-router.get('/:id', async (req, res) => {
+router.get('/:id', (req, res) => {
   var x=[];
   let CustomerId = req.params.id;
   let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
@@ -158,9 +158,8 @@ router.get('/:id', async (req, res) => {
 
 
 //Add user
-router.post('/', async (req, res) => {
+router.post('/', (req, res) => {
   client.subscribe(req.body.topic);
-  db.serialize(function() {
     db.run(`CREATE TABLE IF NOT EXISTS user(  
       [CustomerId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,  
       [CustomerName] VARCHAR(50) NOT NULL,
@@ -194,11 +193,11 @@ router.post('/', async (req, res) => {
     req.body.VIN,req.body.MAC,req.body.topic,req.body.ACTIVE,req.body.VEHICLE_TYPE,req.body.FUEL_TYPE,
     req.body.FUEL_LEVEL,req.body.FUEL_CAPACITY,req.body.MILAGE,new Date().toLocaleString(),new Date().toLocaleString(),req.body.OtherData,req.body.CompanyName];
     let placeholders = records.map((value) => '?').join(',');
-    console.log(value);
+    //console.log(value);
   let sql = 'INSERT INTO user(CustomerName,PHONE,EMAIL,ADDRESS,RFID,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE,FUEL_TYPE,FUEL_LEVEL,FUEL_CAPACITY,MILAGE,DateOfCreation,DateOfUpdation,OtherData,CompanyName) VALUES'+'('+placeholders+')';
   
   // output the INSERT statement
-  //console.log(sql);
+  console.log(sql);
   
   db.run(sql, records, function(err) {
     if (err) {
@@ -208,38 +207,92 @@ router.post('/', async (req, res) => {
     console.log(`Rows inserted ${this.changes}`);
     });
     //db.close();
-  });
   client.publish(req.body.topic,"ADDED to DB");
   res.status(201).send({"success":true, "msg":"added"});
 
 });
 
 //Edit user by id
-router.put('/edit/:id', async (req, res) => {
-  let CustomerId = req.params.id;
-  let records = ['CustomerName','PHONE','EMAIL','ADDRESS','RFID','VIN','MAC',
-  'topic','ACTIVE','VEHICLE_TYPE','FUEL_TYPE','FUEL_LEVEL','FUEL_CAPACITY',
-  'MILAGE','DateOfCreation','DateOfUpdation','OtherData','CompanyName'];
-  let placeholders = records.map((value) => value+' = ? ').join(', ');
-  let sql = 'UPDATE user SET '+placeholders+' WHERE CustomerId = ?';
-  let data=[req.body.CustomerName,req.body.PHONE, req.body.EMAIL,req.body.ADDRESS,
+router.put('/edit/:id', (req, res) => {
+
+  let j=0;
+  let data=[];
+  let a=[];
+  let b=[];
+  function getSqlQuery(arr){
+    let res = [];
+    for(let i=0;i<arr.length;i++){
+      if(arr[i]==0)
+        res[i]='CustomerName';
+      if(arr[i]==1)
+        res[i]='PHONE';
+      if(arr[i]==2)
+        res[i]='EMAIL';
+      if(arr[i]==3)
+        res[i]='ADDRESS';
+      if(arr[i]==4)
+        res[i]='RFID';
+      if(arr[i]==5)
+        res[i]='VIN';
+      if(arr[i]==6)
+        res[i]='MAC';
+      if(arr[i]==7)
+        res[i]='topic';
+      if(arr[i]==8)
+        res[i]='ACTIVE';
+      if(arr[i]==9)
+        res[i]='VEHICLE_TYPE';
+      if(arr[i]==10)
+        res[i]='FUEL_TYPE';
+      if(arr[i]==11)
+        res[i]='FUEL_LEVEL';
+      if(arr[i]==12)
+        res[i]='FUEL_CAPACITY';
+      if(arr[i]==13)
+        res[i]='MILAGE';
+      if(arr[i]==14)
+        res[i]='DateOfCreation';
+      if(arr[i]==15)
+        res[i]='DateOfUpdation';
+      if(arr[i]==16)
+        res[i]='OtherData';
+      if(arr[i]==17)
+        res[i]='CompanyName';
+    }
+    return res;
+  }
+
+  let query=[req.body.CustomerName,req.body.PHONE, req.body.EMAIL,req.body.ADDRESS,
     req.body.RFID,req.body.VIN,req.body.MAC,req.body.topic,req.body.ACTIVE,
     req.body.VEHICLE_TYPE,req.body.FUEL_TYPE,req.body.FUEL_LEVEL,
     req.body.FUEL_CAPACITY,req.body.MILAGE,new Date().toLocaleString(),
-    new Date().toLocaleString(),req.body.OtherData,req.body.CompanyName, 
-    CustomerId];
-  db.run(sql,data, (err) => {
-    if (err) {
-      res.status(400).json({"error":err.message});
-      return;
+    new Date().toLocaleString(),req.body.OtherData,req.body.CompanyName];
+    
+    for(let i=0;i<=17;i++){
+      if(query[i]!=null){
+        data[j]=query[i];
+        a[j]=i;
+        j++;
+      }
     }
-    res.status(200).send({"msg":"edited"});
+    b = getSqlQuery(a);
+    let CustomerId = req.params.id;
+    data[j]=CustomerId;
+    let placeholders = b.map((value) => value+' = ? ').join(', ');
+    let sql = 'UPDATE user SET '+placeholders+' WHERE CustomerId = ?';
+    console.log(sql);
+    console.log(data);
+    db.run(sql,data, (err) => {
+      if (err) {
+        res.status(400).json({"error":err.message});
+        return;
+      }
+      res.status(200).send({"msg":"edited"});
   });
 });
 
-
 //Delete user by id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', (req, res) => {
   let CustomerId = req.params.id;
   let sql = `DELETE FROM user WHERE CustomerId = ?`;
   db.run(sql, [CustomerId], (err) => {
