@@ -270,7 +270,7 @@
               }
             }
           },
-          "/{userId}": {
+          "/api/registration/{userId}": {
             "get": {
               "description": "Get a user registred by passing the userId",
               "produces": [
@@ -298,7 +298,7 @@
               }
             }
           },
-          "/edit/{userId}": {
+          "/api/registration/edit/{userId}": {
             "put": {
               "description": "Edit user details",
               "consumes": [
