@@ -18,6 +18,7 @@
     "libnmap": "^0.4.16",
     "local-devices": "^1.1.1",
     "mongodb": "^3.1.10",
+    "mqtt": "^2.18.8",
     "node-es6": "^0.3.1",
     "node-wifi": "^2.0.5",
     "qs": "^6.6.0",

@@ -1,15 +1,8 @@
 const express = require('express');
 var qs = require('qs');
 var assert = require('assert');
-var Client = require('strong-pubsub');
-var Adapter = require('strong-pubsub-mqtt');
 var db = require('../../db');
 const router = express.Router();
-var client = new Client({host: 'test.mosquitto.org', port: 1883}, Adapter);
-
-client.on('message', function(topic, msg) {
-  console.log(topic, msg.toString()); // => movies birdman
- });
 
 function rowObj(row){
   var x=[];
@@ -159,7 +152,6 @@ router.get('/:id', (req, res) => {
 
 //Add user
 router.post('/', (req, res) => {
-  client.subscribe(req.body.topic);
     db.run(`CREATE TABLE IF NOT EXISTS user(  
       [CustomerId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,  
       [CustomerName] VARCHAR(50) NOT NULL,
@@ -169,7 +161,7 @@ router.post('/', (req, res) => {
     [RFID] INTEGER NOT NULL UNIQUE,
       [VIN] INTEGER  NOT NULL, 
     [MAC] VARCHAR(50) NOT NULL,
-      [TOPIC] VARCHAR(50) NOT NULL,
+      [TOPIC] VARCHAR(50) NOT NULL UNIQUE,
     [ACTIVE] INT NOT NULL,
       [VEHICLE_TYPE] VARCHAR(50) NOT NULL,
     [FUEL_TYPE] VARCHAR(50) NOT NULL,
@@ -207,9 +199,7 @@ router.post('/', (req, res) => {
     console.log(`Rows inserted ${this.changes}`);
     });
     //db.close();
-  client.publish(req.body.topic,"ADDED to DB");
   res.status(201).send({"success":true, "msg":"added"});
-
 });
 
 //Edit user by id
@@ -304,9 +294,5 @@ router.delete('/:id', (req, res) => {
     res.status(200).send({"msg":"deleted", changes: this.changes});
   });
 });
-// Default response for any other request
-router.use(function(req, res){
-  res.status(404).send({"msg":"404 NOT FOUND"});
-});
-  
-  module.exports = router;
+
+module.exports = router;
