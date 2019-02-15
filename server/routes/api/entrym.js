@@ -1,28 +1,38 @@
-var $;
-$ = require('jquery');
 const express = require('express');
-var Client = require('strong-pubsub');
-var Adapter = require('strong-pubsub-mqtt');
-var client = new Client({
-  host: 'test.mosquitto.org',
-  port: 1883
-}, Adapter);
+var mqtt = require('mqtt');
+let options = {
+  "clientId": 'mqttjs_' + Math.random().toString(16).substr(2, 8),
+  "keepalive": 30,
+  "connectTimeout": 30000,    //Wait till 30sec before disconnecting
+  "clean": false,
+  "protocolId": "MQTT",
+  "protocolVersion": 4
+}
+var client  = mqtt.connect('mqtt://127.0.0.1',options)
 var db = require('../../db');
 const router = express.Router();
 var id;
 var topics = [];
+var topics1 = [];
 var mqttArr = [];
 
-client.connect(function () {
+client.on('connect', function () {
 
       console.log("Server connected to the Mqtt Broker");
         
 })
-client.on('message', function(topic, msg,) {
+client.on('message', function(topic, msg) {
+  client.publish(topics1,"",{ retain:true, qos:1});    //Clear the retained msg
     console.log(msg.toString());
-    // if(msg != null){
-    let obj = JSON.parse(msg.toString()); 
-    console.log(obj.fl);
+
+    let obj = JSON.parse(msg.toString());
+    //console.log(obj.fl);
+    if(topics1.includes(topic)){
+      let topicObj = {topic,obj};
+      mqttArr.push(topicObj);
+      console.log(mqttArr);
+      topics1 = topics1.filter(item => item !== topic)
+    }
 
  });
  client.on("error", function(error) {
@@ -52,10 +62,10 @@ router.get('/', (req, res) => {
     rows.forEach((row) => {
       //console.log(row.topic);
           topics[i]= row.TOPIC;
-          client.subscribe(row.TOPIC);
-          //client.publish(row.TOPIC,"",{ retain:true, qos:1});    //Clear the retained msg
+          client.subscribe(row.TOPIC,{qos:1});
       i++;
     });
+    topics1 = topics;
     res.send(topics);
   });
 });

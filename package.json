@@ -17,7 +17,7 @@
     "express": "^4.16.4",
     "libnmap": "^0.4.16",
     "local-devices": "^1.1.1",
-    "mongodb": "^3.1.10",
+    "mongodb": "^3.1.13",
     "mqtt": "^2.18.8",
     "node-es6": "^0.3.1",
     "node-wifi": "^2.0.5",
@@ -31,6 +31,6 @@
     "wireless-tools": "^0.19.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.9"
+    "nodemon": "^1.18.10"
   }
 }
