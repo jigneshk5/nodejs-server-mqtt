@@ -24,7 +24,6 @@ client.on('message', function(topic, msg,) {
     console.log(JSON.parse(msg.toString()));
     // let obj = JSON.parse(msg.toString());
     // console.log(obj.fl);
-
  });
  client.on("error", function(error) {
   console.log("ERROR: ", error);
