@@ -21,10 +21,9 @@ client.on('connect', function () {
         
 })
 client.on('message', function(topic, msg,) {
-    console.log(msg.toString());
-
-    let obj = JSON.parse(msg.toString());
-    console.log(obj.fl);
+    console.log(JSON.parse(msg.toString()));
+    // let obj = JSON.parse(msg.toString());
+    // console.log(obj.fl);
 
  });
  client.on("error", function(error) {
