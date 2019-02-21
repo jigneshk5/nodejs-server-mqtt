@@ -11,6 +11,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const RegData = require('./routes/api/registration');
+const existing = require('./routes/api/existingUser');
 const test = require('./routes/api/test');
 const entry = require('./routes/api/entrym');
 //const wifiList = require('./routes/api/wifiList');
@@ -21,6 +22,7 @@ app.use('/api/registration',RegData);
 app.use('/api/test',test);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/',entry);
+app.use('/existing',existing);
 //app.use('/api/wifiList', wifiList);
 //app.use('/api/wifiAP', wifiAP);
 //app.use('/api/connectedWifi', connectedWifi);

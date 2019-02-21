@@ -15,12 +15,10 @@ var id;
 var topics = [];
 var topics1 = [];
 var mqttArr = [];
-
-client.on('connect', function () {
-
-      console.log("Server connected to the Mqtt Broker");
-        
-})
+let newObj;
+// client.on('connect', function () {
+//     console.log("Server connected to the Mqtt Broker");    
+// })
 client.on('message', function(topic, msg) {
   client.publish(topics1,"",{ retain:true, qos:1});    //Clear the retained msg
     console.log(msg.toString());
@@ -32,10 +30,34 @@ client.on('message', function(topic, msg) {
     if(topics1.includes(topic) && compare){
       let topicObj = {topic,obj};
       mqttArr.push(topicObj);
-      console.log(mqttArr);
       topics1 = topics1.filter(item => item !== topic)
     }
-
+    else{
+      newObj = JSON.parse(msg.toString());
+      for(let i=0; i<mqttArr.length; i++){
+        if(mqttArr[i].topic == topic){
+          mqttArr[i].obj.fc = newObj.fc;
+          mqttArr[i].obj.fl = newObj.fl;
+        }
+      }
+    }
+    console.log(mqttArr);
+    let sql = `UPDATE user
+                SET FUEL_CAPACITY = ?,FUEL_LEVEL = ?
+                WHERE topic = ?`;
+    for(let i=0; i<mqttArr.length; i++){
+      if(mqttArr[i].topic == topic){
+        db.run(sql,[mqttArr[i].obj.fc,mqttArr[i].obj.fl,topic], function(err) {
+          if (err) {
+            return console.error(err.message);
+          }
+          console.log(`Row(s) updated: ${this.changes}`);
+        
+        });
+      }
+    }
+    // close the database connection
+    //db.close();
  });
 //  client.on("error", function(error) {
 //   console.log("ERROR: ", error);
