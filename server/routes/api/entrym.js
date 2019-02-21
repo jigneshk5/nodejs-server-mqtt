@@ -24,10 +24,12 @@ client.on('connect', function () {
 client.on('message', function(topic, msg) {
   client.publish(topics1,"",{ retain:true, qos:1});    //Clear the retained msg
     console.log(msg.toString());
-
+    function CompareMsg(){
+      
+    }
     let obj = JSON.parse(msg.toString());
     //console.log(obj.fl);
-    if(topics1.includes(topic)){
+    if(topics1.includes(topic) && compare){
       let topicObj = {topic,obj};
       mqttArr.push(topicObj);
       console.log(mqttArr);
@@ -35,17 +37,17 @@ client.on('message', function(topic, msg) {
     }
 
  });
- client.on("error", function(error) {
-  console.log("ERROR: ", error);
-});
+//  client.on("error", function(error) {
+//   console.log("ERROR: ", error);
+// });
 
-client.on('offline', function() {
-  console.log("offline");
-});
+// client.on('offline', function() {
+//   console.log("offline");
+// });
 
-client.on('reconnect', function() {
-  console.log("reconnect");
-});
+// client.on('reconnect', function() {
+//   console.log("reconnect");
+// });
 // Ping to the server for subscribing the topics
 
 router.get('/', (req, res) => {
