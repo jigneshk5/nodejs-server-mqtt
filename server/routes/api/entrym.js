@@ -16,9 +16,9 @@ var topics = [];
 var topics1 = [];
 var mqttArr = [];
 let newObj;
-// client.on('connect', function () {
-//     console.log("Server connected to the Mqtt Broker");    
-// })
+client.on('connect', function () {
+    console.log("Server connected to the Mqtt Broker");    
+})
 client.on('message', function(topic, msg) {
   client.publish(topics1,"",{ retain:true, qos:1});    //Clear the retained msg
     console.log(msg.toString());

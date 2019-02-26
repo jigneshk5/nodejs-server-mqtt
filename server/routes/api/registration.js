@@ -3,6 +3,65 @@ var qs = require('qs');
 var assert = require('assert');
 var db = require('../../db');
 const router = express.Router();
+var mqtt = require('mqtt');
+var topics = [];
+var topics1 = [];
+var mqttArr = [];
+let newObj;
+let options = {
+  "clientId": 'mqttjs_' + Math.random().toString(16).substr(2, 8),
+  "keepalive": 30,
+  "connectTimeout": 30000,    //Wait till 30sec before disconnecting
+  "clean": false,
+  "protocolId": "MQTT",
+  "protocolVersion": 4
+}
+var client  = mqtt.connect('mqtt://127.0.0.1',options)
+
+client.on('connect', function () {
+  console.log("Server connected to the Mqtt Broker");    
+})
+client.on('message', function(topic, msg) {
+client.publish(topics1,"",{ retain:true, qos:1});    //Clear the retained msg
+  console.log(msg.toString());
+
+  let obj = JSON.parse(msg.toString());
+  //console.log(obj.fl);
+  if(topics1.includes(topic)){
+    let topicObj = {topic,obj};
+    mqttArr.push(topicObj);
+    topics1 = topics1.filter(item => item !== topic)
+  }
+  else{
+    newObj = JSON.parse(msg.toString());
+    for(let i=0; i<mqttArr.length; i++){
+      if(mqttArr[i].topic == topic){
+        mqttArr[i].obj.fc = newObj.fc;
+        mqttArr[i].obj.fl = newObj.fl;
+      }
+    }
+  }
+  console.log(mqttArr);
+  let sql = `UPDATE user
+              SET FUEL_CAPACITY = ?,FUEL_LEVEL = ?
+              WHERE topic = ?`;
+  for(let i=0; i<mqttArr.length; i++){
+    if(mqttArr[i].topic == topic){
+      db.run(sql,[mqttArr[i].obj.fc,mqttArr[i].obj.fl,topic], function(err) {
+        if (err) {
+          return console.error(err.message);
+        }
+        console.log(`Row(s) updated: ${this.changes}`);
+      
+      });
+    }
+  }
+  // close the database connection
+  //db.close();
+});
+client.on("error", function(error) {
+console.log("ERROR: ", error);
+});
 
 function rowObj(row){
   var x=[];
@@ -186,6 +245,7 @@ router.post('/', (req, res) => {
     req.body.FUEL_LEVEL,req.body.FUEL_CAPACITY,req.body.MILAGE,new Date().toLocaleString(),new Date().toLocaleString(),req.body.OtherData,req.body.CompanyName];
     let placeholders = records.map((value) => '?').join(',');
     //console.log(value);
+    client.subscribe(req.body.topic,{qos:1});
   let sql = 'INSERT INTO user(CustomerName,PHONE,EMAIL,ADDRESS,RFID,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE,FUEL_TYPE,FUEL_LEVEL,FUEL_CAPACITY,MILAGE,DateOfCreation,DateOfUpdation,OtherData,CompanyName) VALUES'+'('+placeholders+')';
   
   // output the INSERT statement
