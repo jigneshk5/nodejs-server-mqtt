@@ -1,6 +1,4 @@
 const express = require('express');
-var qs = require('qs');
-var assert = require('assert');
 var db = require('../../db');
 const router = express.Router();
 

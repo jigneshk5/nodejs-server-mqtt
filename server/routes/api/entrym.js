@@ -22,9 +22,9 @@ let newObj;
 client.on('message', function(topic, msg) {
   client.publish(topics1,"",{ retain:true, qos:1});    //Clear the retained msg
     console.log(msg.toString());
-    function CompareMsg(){
+    // function CompareMsg(){
       
-    }
+    // }
     let obj = JSON.parse(msg.toString());
     //console.log(obj.fl);
     if(topics1.includes(topic) && compare){
