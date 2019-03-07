@@ -5,7 +5,7 @@ var db = require('../../db');
 const router = express.Router();
 var mqtt = require('mqtt');
 var topics = [];
-var topics1 = [];
+var t = [];
 var mqttArr = [];
 let newObj;
 let options = {
@@ -19,26 +19,29 @@ let options = {
 var client  = mqtt.connect('mqtt://127.0.0.1',options)
 
 client.on('connect', function () {
-  console.log("Server connected to the Mqtt Broker");    
+  //console.log("Server connected to the Mqtt Broker");    
 })
 client.on('message', function(topic, msg) {
 client.publish(topics1,"",{ retain:true, qos:1});    //Clear the retained msg
-  console.log(msg.toString());
+  //console.log(msg.toString());
 
   let obj = JSON.parse(msg.toString());
   //console.log(obj.fl);
-  if(topics1.includes(topic)){
-    let topicObj = {topic,obj};
+
+  if(topics.includes(topic)){
+    let topicObj = {topic,obj,timer};
     mqttArr.push(topicObj);
-    topics1 = topics1.filter(item => item !== topic)
+    //topics = topics.filter(item => item !== topic)
   }
-  else{
-    newObj = JSON.parse(msg.toString());
-    for(let i=0; i<mqttArr.length; i++){
-      if(mqttArr[i].topic == topic){
-        mqttArr[i].obj.fc = newObj.fc;
-        mqttArr[i].obj.fl = newObj.fl;
-      }
+  newObj = JSON.parse(msg.toString());
+  for(let i=0; i<mqttArr.length; i++){
+    if(mqttArr[i].topic == topic){
+      setInterval(function(){ 
+        t[i]++; 
+      }, 1000);
+      mqttArr[i].obj.fc = newObj.fc;
+      mqttArr[i].obj.fl = newObj.fl;
+      mqttArr[i].timer = t[i];
     }
   }
   console.log(mqttArr);
@@ -56,7 +59,7 @@ client.publish(topics1,"",{ retain:true, qos:1});    //Clear the retained msg
       });
     }
   }
-  // close the database connection
+  //close the database connection
   //db.close();
 });
 client.on("error", function(error) {
@@ -246,6 +249,9 @@ router.post('/', (req, res) => {
     let placeholders = records.map((value) => '?').join(',');
     //console.log(value);
     client.subscribe(req.body.topic,{qos:1});
+    topics.push(req.body.topic);
+    console.log(topics);
+    //topics1 = topics;
   let sql = 'INSERT INTO user(CustomerName,PHONE,EMAIL,ADDRESS,RFID,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE,FUEL_TYPE,FUEL_LEVEL,FUEL_CAPACITY,MILAGE,DateOfCreation,DateOfUpdation,OtherData,CompanyName) VALUES'+'('+placeholders+')';
   
   // output the INSERT statement
@@ -256,10 +262,12 @@ router.post('/', (req, res) => {
       res.status(400).json({"error":err.message});
       return;
     }
-    console.log(`Rows inserted ${this.changes}`);
+    else{
+      console.log(`Rows inserted ${this.changes}`);
+      res.status(200).send({"success":true, "msg":"added"});
+    }
     });
     //db.close();
-  res.status(201).send({"success":true, "msg":"added"});
 });
 
 //Edit user by id

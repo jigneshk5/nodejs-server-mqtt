@@ -16,7 +16,13 @@ var topics = [];
 var mqttArr = [];
 
 client.on('connect', function () {
-
+      client.subscribe('we12',(err, granted) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log(granted)
+        }
+    });
       console.log("Server connected to the Mqtt Broker");
         
 })
@@ -35,6 +41,8 @@ client.on('offline', function() {
 
 client.on('reconnect', function() {
   console.log("reconnect");
+  client.unsubscribe('we12');
+  console.log("User moved away");
 });
 // Ping to the server for subscribing the topics
 
@@ -52,8 +60,8 @@ router.get('/', (req, res) => {
     rows.forEach((row) => {
       //console.log(row.topic);
           topics[i]= row.TOPIC;
-          client.subscribe(row.TOPIC,{qos:1});
-          client.publish(row.TOPIC,"",{ retain:true, qos:1});    //Clear the retained msg
+          client.subscribe(row.TOPIC);
+          //client.publish(row.TOPIC,"",{ retain:true, qos:1});    //Clear the retained msg
       i++;
     });
     res.send(topics);

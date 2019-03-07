@@ -13,19 +13,14 @@ app.use(cors());
 const RegData = require('./routes/api/registration');
 const existing = require('./routes/api/existingUser');
 const test = require('./routes/api/test');
-const entry = require('./routes/api/entrym');
-//const wifiList = require('./routes/api/wifiList');
-//const wifiAP = require('./routes/api/wifiAP');
-//const connectedWifi = require('./routes/api/connectedWifi');
+const entry = require('./routes/api/entry');
 
 app.use('/api/registration',RegData);
 app.use('/api/test',test);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/',entry);
 app.use('/existing',existing);
-//app.use('/api/wifiList', wifiList);
-//app.use('/api/wifiAP', wifiAP);
-//app.use('/api/connectedWifi', connectedWifi);
+
 // Default response for any other request
 app.use(function(req, res){
     res.status(404).send({"msg":"404 NOT FOUND"});
