@@ -16,9 +16,9 @@ const test = require('./routes/api/test');
 const entry = require('./routes/api/entry');
 
 app.use('/api/registration',RegData);
-app.use('/api/test',test);
+//app.use('/api/test',test);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/',entry);
+//app.use('/',entry);
 app.use('/existing',existing);
 
 // Default response for any other request

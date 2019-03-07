@@ -8,42 +8,42 @@ let options = {
   "protocolId": "MQTT",
   "protocolVersion": 4
 }
-var client  = mqtt.connect('mqtt://127.0.0.1',options)
+//var client  = mqtt.connect('mqtt://127.0.0.1',options)
 var db = require('../../db');
 const router = express.Router();
 var id;
 var topics = [];
 var mqttArr = [];
 
-client.on('connect', function () {
-      client.subscribe('we12',(err, granted) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log(granted)
-        }
-    });
-      console.log("Server connected to the Mqtt Broker");
+// client.on('connect', function () {
+//       client.subscribe('we12',(err, granted) => {
+//         if (err) {
+//             console.log(err)
+//         } else {
+//             console.log(granted)
+//         }
+//     });
+//       console.log("Server connected to the Mqtt Broker");
         
-})
-client.on('message', function(topic, msg,) {
-    console.log(JSON.parse(msg.toString()));
-    // let obj = JSON.parse(msg.toString());
-    // console.log(obj.fl);
- });
- client.on("error", function(error) {
-  console.log("ERROR: ", error);
-});
+// })
+// client.on('message', function(topic, msg,) {
+//     console.log(JSON.parse(msg.toString()));
+//     // let obj = JSON.parse(msg.toString());
+//     // console.log(obj.fl);
+//  });
+//  client.on("error", function(error) {
+//   console.log("ERROR: ", error);
+// });
 
-client.on('offline', function() {
-  console.log("offline");
-});
+// client.on('offline', function() {
+//   console.log("offline");
+// });
 
-client.on('reconnect', function() {
-  console.log("reconnect");
-  client.unsubscribe('we12');
-  console.log("User moved away");
-});
+// client.on('reconnect', function() {
+//   console.log("reconnect");
+//   client.unsubscribe('we12');
+//   console.log("User moved away");
+// });
 // Ping to the server for subscribing the topics
 
 router.get('/', (req, res) => {
@@ -60,7 +60,7 @@ router.get('/', (req, res) => {
     rows.forEach((row) => {
       //console.log(row.topic);
           topics[i]= row.TOPIC;
-          client.subscribe(row.TOPIC);
+          //client.subscribe(row.TOPIC);
           //client.publish(row.TOPIC,"",{ retain:true, qos:1});    //Clear the retained msg
       i++;
     });

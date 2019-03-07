@@ -22,10 +22,11 @@ client.on('connect', function () {
   //console.log("Server connected to the Mqtt Broker");    
 })
 client.on('message', function(topic, msg) {
-client.publish(topics1,"",{ retain:true, qos:1});    //Clear the retained msg
+client.publish(topics,"",{ retain:true, qos:1});    //Clear the retained msg
   //console.log(msg.toString());
 
   let obj = JSON.parse(msg.toString());
+  let timer;
   //console.log(obj.fl);
 
   if(topics.includes(topic)){
@@ -42,6 +43,11 @@ client.publish(topics1,"",{ retain:true, qos:1});    //Clear the retained msg
       mqttArr[i].obj.fc = newObj.fc;
       mqttArr[i].obj.fl = newObj.fl;
       mqttArr[i].timer = t[i];
+      if(t[i]>5){               //If obd device will not send data for 5sec
+        topics = topics.filter(item => item !== topic)
+        client.unsubscribe(topic);
+        client.publish(topic+'/stop',"STOP",{ qos:1});
+      }
     }
   }
   console.log(mqttArr);
