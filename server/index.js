@@ -10,16 +10,16 @@ const swaggerDocument = require('./swagger.json');
 app.use(bodyParser.json());
 app.use(cors());
 
-const RegData = require('./routes/api/registration');
-const existing = require('./routes/api/existingUser');
+const registration = require('./routes/api/registration');
+const existingUser = require('./routes/api/existingUser');
 const test = require('./routes/api/test');
 const entry = require('./routes/api/entry');
 
-app.use('/api/registration',RegData);
+app.use('/api/registration',registration);
 //app.use('/api/test',test);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 //app.use('/',entry);
-app.use('/existing',existing);
+app.use('/existing',existingUser);
 
 // Default response for any other request
 app.use(function(req, res){
