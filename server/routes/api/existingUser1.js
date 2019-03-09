@@ -37,13 +37,7 @@ console.log(t);
 
   let obj = JSON.parse(msg.toString());
   let timer;
-  function isEmpty(object) {
-    for(var key in object){
-        if(object.hasOwnProperty(key))
-            return false;
-    }
-    return true;
-}
+
   //console.log(obj.fl);
 
   if(topics1.includes(topic)){
@@ -74,18 +68,12 @@ console.log(t);
       
        });
      }
-     mqttArr[i].obj = {};
      setInterval(function(){
       if(topics.includes(topic)){
         //if(isEmpty(obj))
           x= x+1;
-          if(isEmpty(mqttArr[i].obj) && mqttArr[i].timer>30){ //If obd device will not send data for 30sec
-            console.log("Unsubscribed"+mqttArr[i].topic);
-            topics = topics.filter(item => item !== mqttArr[i].topic)
-            client.unsubscribe(mqttArr[i].topic);
-          }
       }
-    },1000)
+    },4000)
 
    }
   //close the database connection
@@ -94,9 +82,28 @@ console.log(t);
 client.on("error", function(error) {
 console.log("ERROR: ", error);
 });
+function isEmpty(object) {
+  for(var key in object){
+      if(object.hasOwnProperty(key))
+          return false;
+  }
+  return true;
+}
 
-//Get post
-
+//Unsubscrbing a topic
+setInterval(function(){
+  for(let i=0; i<mqttArr.length; i++){
+    mqttArr[i].obj = {};
+        //if(isEmpty(obj))
+          if(isEmpty(mqttArr[i].obj) && mqttArr[i].timer>30){ //If obd device will not send data for 30sec
+            console.log("Unsubscribed"+mqttArr[i].topic);
+            topics = topics.filter(item => item !== mqttArr[i].topic)
+            //mqttArr.splice(i,1);
+            console.log(mqttArr);
+            client.unsubscribe(mqttArr[i].topic);
+          }
+    }
+},1000)
 
 //Post req for subscrbing the topic
 router.post('/', (req, res) => {

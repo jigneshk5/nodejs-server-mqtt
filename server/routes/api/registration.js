@@ -1,74 +1,6 @@
 const express = require('express');
 var db = require('../../db');
 const router = express.Router();
-var mqtt = require('mqtt');
-var topics = [];
-var t = [];
-var mqttArr = [];
-let newObj;
-let options = {
-  "clientId": 'mqttjs_' + Math.random().toString(16).substr(2, 8),
-  "keepalive": 30,
-  "connectTimeout": 30000,    //Wait till 30sec before disconnecting
-  "clean": false,
-  "protocolId": "MQTT",
-  "protocolVersion": 4
-}
-var client  = mqtt.connect('mqtt://127.0.0.1',options)
-
-client.on('connect', function () {
-  //console.log("Server connected to the Mqtt Broker");    
-})
-client.on('message', function(topic, msg) {
-client.publish(topics,"",{ retain:true, qos:1});    //Clear the retained msg
-  //console.log(msg.toString());
-
-  let obj = JSON.parse(msg.toString());
-  let timer;
-  //console.log(obj.fl);
-
-  if(topics.includes(topic)){
-    let topicObj = {topic,obj,timer};
-    mqttArr.push(topicObj);
-    //topics = topics.filter(item => item !== topic)
-  }
-  newObj = JSON.parse(msg.toString());
-  for(let i=0; i<mqttArr.length; i++){
-    if(mqttArr[i].topic == topic){
-      setInterval(function(){ 
-        t[i]++; 
-      }, 1000);
-      mqttArr[i].obj.fc = newObj.fc;
-      mqttArr[i].obj.fl = newObj.fl;
-      mqttArr[i].timer = t[i];
-      if(t[i]>5){               //If obd device will not send data for 5sec
-        topics = topics.filter(item => item !== topic)
-        client.unsubscribe(topic);
-        client.publish(topic+'/stop',"STOP",{ qos:1});
-      }
-    }
-  }
-  console.log(mqttArr);
-  let sql = `UPDATE user
-              SET FUEL_CAPACITY = ?,FUEL_LEVEL = ?
-              WHERE topic = ?`;
-  for(let i=0; i<mqttArr.length; i++){
-    if(mqttArr[i].topic == topic){
-      db.run(sql,[mqttArr[i].obj.fc,mqttArr[i].obj.fl,topic], function(err) {
-        if (err) {
-          return console.error(err.message);
-        }
-        console.log(`Row(s) updated: ${this.changes}`);
-      
-      });
-    }
-  }
-  //close the database connection
-  //db.close();
-});
-client.on("error", function(error) {
-console.log("ERROR: ", error);
-});
 
 function rowObj(row){
   var x=[];
@@ -252,10 +184,7 @@ router.post('/', (req, res) => {
     req.body.FUEL_LEVEL,req.body.FUEL_CAPACITY,req.body.MILAGE,new Date().toLocaleString(),new Date().toLocaleString(),req.body.OtherData,req.body.CompanyName];
     let placeholders = records.map((value) => '?').join(',');
     //console.log(value);
-    client.subscribe(req.body.topic,{qos:1});
-    topics.push(req.body.topic);
-    console.log(topics);
-    //topics1 = topics;
+ 
   let sql = 'INSERT INTO user(CustomerName,PHONE,EMAIL,ADDRESS,RFID,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE,FUEL_TYPE,FUEL_LEVEL,FUEL_CAPACITY,MILAGE,DateOfCreation,DateOfUpdation,OtherData,CompanyName) VALUES'+'('+placeholders+')';
   
   // output the INSERT statement
