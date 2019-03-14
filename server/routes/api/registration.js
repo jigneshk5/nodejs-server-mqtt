@@ -85,7 +85,7 @@ router.get('/', (req, res) => {
     }
     b = getSqlQuery(a);
     let placeholders = b.map((value) => value+' = ? ').join('AND ');
-    let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,
+    let sql = `SELECT CustomerId id,CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,
     topic,ACTIVE,VEHICLE_TYPE vt,FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,
     MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM 
     user WHERE ${placeholders}COLLATE NOCASE`;
@@ -101,15 +101,18 @@ router.get('/', (req, res) => {
         return;
       }
       rows.forEach((row) => {
-        var rowObj = Object.assign({},[row.cn,row.ph,row.mail,row.RFID,row.ad,row.VIN,row.MAC,row.topic,row.ACTIVE,row.vt
-          ,row.ft,row.fl,row.fc,row.MILAGE,row.dc,row.du,row.od,row.con]);
+        var rowObj = Object.assign({},{'Customer id':row.id},{'Customer Name':row.cn},{'phone':row.ph},
+        {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.topic},
+        {'Active State':row.ACTIVE},{'Vehicle type':row.vt},{'Fuel type':row.ft},{'Fuel Level':row.fl},
+        {'Fuel capacity':row.fc},{'Milage':row.MILAGE},{'DateOfCreation':row.dc},{'DateOfUpdation':row.du},
+        {'OtherData':row.od},{'CompanyName':row.con});
           x.push(rowObj);
           });
           res.send(x);
       });
     }
   else {
-  let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,
+  let sql = `SELECT CustomerId id,CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,
   topic,ACTIVE,VEHICLE_TYPE vt,FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,
   MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con 
   FROM user`;
@@ -119,8 +122,11 @@ router.get('/', (req, res) => {
         return;
       }
     rows.forEach((row) => {
-    var rowObj = Object.assign({},[row.cn,row.ph,row.mail,row.RFID,row.ad,row.VIN,row.MAC,row.topic,row.ACTIVE,row.vt
-      ,row.ft,row.fl,row.fc,row.MILAGE,row.dc,row.du,row.od,row.con]);
+    var rowObj = Object.assign({},{'Customer id':row.id},{'Customer Name':row.cn},{'phone':row.ph},
+    {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.topic},
+    {'Active State':row.ACTIVE},{'Vehicle type':row.vt},{'Fuel type':row.ft},{'Fuel Level':row.fl},
+    {'Fuel capacity':row.fc},{'Milage':row.MILAGE},{'DateOfCreation':row.dc},{'DateOfUpdation':row.du},
+    {'OtherData':row.od},{'CompanyName':row.con});
       x.push(rowObj);
       });
       res.send(x);
@@ -132,7 +138,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   var x=[];
   let CustomerId = req.params.id;
-  let sql = `SELECT CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
+  let sql = `SELECT CustomerId id,CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,topic,ACTIVE,VEHICLE_TYPE vt,
   FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM user
   WHERE CustomerId = ?`;
   db.get(sql, [CustomerId], (err, row) => {
@@ -140,8 +146,11 @@ router.get('/:id', (req, res) => {
       res.status(400).json({"error":err.message});
       return;
     }
-      var rowObj = Object.assign({},[row.cn,row.ph,row.mail,row.RFID,row.ad,row.VIN,row.MAC,row.topic,row.ACTIVE,row.vt
-        ,row.ft,row.fl,row.fc,row.MILAGE,row.dc,row.du,row.od,row.con]);
+    var rowObj = Object.assign({},{'Customer id':row.id},{'Customer Name':row.cn},{'phone':row.ph},
+    {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.topic},
+    {'Active State':row.ACTIVE},{'Vehicle type':row.vt},{'Fuel type':row.ft},{'Fuel Level':row.fl},
+    {'Fuel capacity':row.fc},{'Milage':row.MILAGE},{'DateOfCreation':row.dc},{'DateOfUpdation':row.du},
+    {'OtherData':row.od},{'CompanyName':row.con});
       x.push(rowObj);
     res.send(x);
   });
