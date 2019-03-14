@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const registration = require('./routes/api/registration');
-const existingUser = require('./routes/api/existingUser');
+const existingUser = require('./routes/api/existingUser1');
 const test = require('./routes/api/test');
 const entry = require('./routes/api/entry');
 

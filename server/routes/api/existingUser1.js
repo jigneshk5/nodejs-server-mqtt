@@ -4,10 +4,11 @@ const router = express.Router();
 var mqtt = require('mqtt');
 var topics = [];
 var topics1 = [];
-var t = [];
 var mqttArr = [];
 let newObj;
 let x = 0;
+let count =[];
+
 let options = {
   "clientId": 'mqttjs_' + Math.random().toString(16).substr(2, 8),
   "keepalive": 30,
@@ -23,25 +24,14 @@ client.on('connect', function () {
 })
 client.on('message', function(topic, msg) {
 
-Array.prototype.setAll = function(v) {
-  var i, n = topics.length; 
-  for (i = 0; i < n; ++i) {
-    this[i] = v+x;
-    
-  }
-};
-t.setAll(0);
-console.log(t);
   //client.publish(topics,"",{ retain:true, qos:1});    //Clear the retained msg
   //console.log(msg.toString());
 
   let obj = JSON.parse(msg.toString());
-  let timer;
-
   //console.log(obj.fl);
 
   if(topics1.includes(topic)){
-    let topicObj = {topic,obj,timer};
+    topicObj = {topic,obj,count};
     mqttArr.push(topicObj);
     topics1 = topics1.filter(item => item !== topic)
   }
@@ -49,12 +39,21 @@ console.log(t);
   newObj = JSON.parse(msg.toString());
   for(let i=0; i<mqttArr.length; i++){
     if(mqttArr[i].topic == topic){
+      count[i]= 60;
       mqttArr[i].obj.fc = newObj.fc;
       mqttArr[i].obj.fl = newObj.fl;
-      mqttArr[i].timer = t[i];
+      mqttArr[i].count = count[i];
     }
   }
   console.log(mqttArr);
+  setInterval(function(){
+    if(topics.includes(topic)){
+      //if(isEmpty(obj))
+        ++x;
+    }
+    //console.log(Math.round(x/1000));
+    //console.log(x);
+  },2000*count)
   let sql = `UPDATE user
               SET FUEL_CAPACITY = ?,FUEL_LEVEL = ?
               WHERE topic = ?`;
@@ -68,13 +67,7 @@ console.log(t);
       
        });
      }
-     setInterval(function(){
-      if(topics.includes(topic)){
-        //if(isEmpty(obj))
-          x= x+1;
-      }
-    },4000)
-
+     //mqttArr[i].count=mqttArr[i].count+1;
    }
   //close the database connection
   //db.close();
@@ -93,14 +86,17 @@ function isEmpty(object) {
 //Unsubscrbing a topic
 setInterval(function(){
   for(let i=0; i<mqttArr.length; i++){
-    mqttArr[i].obj = {};
+    //mqttArr[i].obj = {};
         //if(isEmpty(obj))
-          if(isEmpty(mqttArr[i].obj) && mqttArr[i].timer>30){ //If obd device will not send data for 30sec
-            console.log("Unsubscribed"+mqttArr[i].topic);
+          mqttArr[i].count=mqttArr[i].count-1;
+          count[i]=mqttArr[i].count;
+          console.log(mqttArr[i].topic+" "+mqttArr[i].count);
+          if(mqttArr[i].count==0){ //If obd device will not send data for 30sec
+            console.log("Unsubscribed: "+mqttArr[i].topic);
             topics = topics.filter(item => item !== mqttArr[i].topic)
-            //mqttArr.splice(i,1);
-            console.log(mqttArr);
             client.unsubscribe(mqttArr[i].topic);
+            mqttArr.splice(i,1);
+            console.log(mqttArr);
           }
     }
 },1000)
@@ -123,6 +119,14 @@ router.post('/', (req, res) => {
       //client.subscribe(topics);
       topics1 = topics;
       console.log(topics);
+      Array.prototype.setZero = function() {
+        var i, n = topics.length; 
+        for (i = mqttArr.length; i < n; ++i) {
+          console.log("check"+i);
+          this[i] = 60;
+        }
+      };
+      count.setZero();
       res.status(200).send("topic found");
   });
 });
