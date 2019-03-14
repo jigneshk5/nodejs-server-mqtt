@@ -6,9 +6,8 @@ var topics = [];
 var topics1 = [];
 var mqttArr = [];
 let newObj;
-let x = 0;
 let count =[];
-
+let period = 30;    //Time after which topic unsubscribed if no mqtt message received
 let options = {
   "clientId": 'mqttjs_' + Math.random().toString(16).substr(2, 8),
   "keepalive": 30,
@@ -39,21 +38,14 @@ client.on('message', function(topic, msg) {
   newObj = JSON.parse(msg.toString());
   for(let i=0; i<mqttArr.length; i++){
     if(mqttArr[i].topic == topic){
-      count[i]= 60;
+      count[i]= period;
       mqttArr[i].obj.fc = newObj.fc;
       mqttArr[i].obj.fl = newObj.fl;
       mqttArr[i].count = count[i];
     }
   }
   console.log(mqttArr);
-  setInterval(function(){
-    if(topics.includes(topic)){
-      //if(isEmpty(obj))
-        ++x;
-    }
-    //console.log(Math.round(x/1000));
-    //console.log(x);
-  },2000*count)
+
   let sql = `UPDATE user
               SET FUEL_CAPACITY = ?,FUEL_LEVEL = ?
               WHERE topic = ?`;
@@ -119,14 +111,14 @@ router.post('/', (req, res) => {
       //client.subscribe(topics);
       topics1 = topics;
       console.log(topics);
-      Array.prototype.setZero = function() {
+      Array.prototype.setPeriod = function() {
         var i, n = topics.length; 
         for (i = mqttArr.length; i < n; ++i) {
           console.log("check"+i);
-          this[i] = 60;
+          this[i] = period;
         }
       };
-      count.setZero();
+      count.setPeriod();
       res.status(200).send("topic found");
   });
 });
