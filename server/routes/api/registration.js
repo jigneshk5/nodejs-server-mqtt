@@ -5,7 +5,7 @@ const router = express.Router();
 function rowObj(row){
   var x=[];
   var rowObj = Object.assign({},[row.cn,row.ph,row.mail,row.RFID,row.ad,row.VIN,
-    row.MAC,row.topic,row.ACTIVE,row.vt,row.ft,row.fl,row.fc,row.MILAGE,row.dc,
+    row.MAC,row.TOPIC,row.ACTIVE,row.vt,row.ft,row.fl,row.fc,row.MILAGE,row.dc,
     row.du,row.od,row.con]);
   x.push(rowObj);
   return x;
@@ -102,7 +102,7 @@ router.get('/', (req, res) => {
       }
       rows.forEach((row) => {
         var rowObj = Object.assign({},{'Customer id':row.id},{'Customer Name':row.cn},{'phone':row.ph},
-        {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.topic},
+        {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.TOPIC},
         {'Active State':row.ACTIVE},{'Vehicle type':row.vt},{'Fuel type':row.ft},{'Fuel Level':row.fl},
         {'Fuel capacity':row.fc},{'Milage':row.MILAGE},{'DateOfCreation':row.dc},{'DateOfUpdation':row.du},
         {'OtherData':row.od},{'CompanyName':row.con});
@@ -123,7 +123,7 @@ router.get('/', (req, res) => {
       }
     rows.forEach((row) => {
     var rowObj = Object.assign({},{'Customer id':row.id},{'Customer Name':row.cn},{'phone':row.ph},
-    {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.topic},
+    {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.TOPIC},
     {'Active State':row.ACTIVE},{'Vehicle type':row.vt},{'Fuel type':row.ft},{'Fuel Level':row.fl},
     {'Fuel capacity':row.fc},{'Milage':row.MILAGE},{'DateOfCreation':row.dc},{'DateOfUpdation':row.du},
     {'OtherData':row.od},{'CompanyName':row.con});
@@ -147,7 +147,7 @@ router.get('/:id', (req, res) => {
       return;
     }
     var rowObj = Object.assign({},{'Customer id':row.id},{'Customer Name':row.cn},{'phone':row.ph},
-    {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.topic},
+    {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.TOPIC},
     {'Active State':row.ACTIVE},{'Vehicle type':row.vt},{'Fuel type':row.ft},{'Fuel Level':row.fl},
     {'Fuel capacity':row.fc},{'Milage':row.MILAGE},{'DateOfCreation':row.dc},{'DateOfUpdation':row.du},
     {'OtherData':row.od},{'CompanyName':row.con});
