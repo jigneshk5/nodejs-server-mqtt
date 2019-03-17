@@ -106,20 +106,25 @@ router.post('/', (req, res) => {
       res.status(400).json({"error":err.message});
       return;
     }
-      client.subscribe(row.TOPIC);
+    client.subscribe(row.TOPIC);
+    if(topics.includes(row.TOPIC)){
+      console.log(topics);
+    }
+    else{
       topics.push(row.TOPIC);
       //client.subscribe(topics);
       topics1 = topics;
       console.log(topics);
-      Array.prototype.setPeriod = function() {
-        var i, n = topics.length; 
-        for (i = mqttArr.length; i < n; ++i) {
-          console.log("check"+i);
-          this[i] = period;
-        }
-      };
-      count.setPeriod();
-      res.status(200).send("topic found");
+    }
+    Array.prototype.setPeriod = function() {
+      var i, n = topics.length; 
+      for (i = mqttArr.length; i < n; ++i) {
+        console.log("check"+i);
+        this[i] = period;
+      }
+    };
+    count.setPeriod();
+    res.status(200).send("topic found");
   });
 });
 
