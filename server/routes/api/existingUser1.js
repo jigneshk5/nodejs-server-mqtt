@@ -5,9 +5,10 @@ var mqtt = require('mqtt');
 var topics = [];
 var topics1 = [];
 var mqttArr = [];
-let newObj;
+let obj={};
+let alert = {};
 let count =[];
-let period = 30;    //Time after which topic unsubscribed if no mqtt message received
+let period = 60;    //Time after which topic unsubscribed if no mqtt message received
 let options = {
   "clientId": 'mqttjs_' + Math.random().toString(16).substr(2, 8),
   "keepalive": 30,
@@ -23,12 +24,7 @@ client.on('connect', function () {
 })
 client.on('message', function(topic, msg) {
 
-  //client.publish(topics,"",{ retain:true, qos:1});    //Clear the retained msg
-  //console.log(msg.toString());
-
-  let obj = JSON.parse(msg.toString());
-  //console.log(obj.fl);
-
+  obj = JSON.parse(msg.toString());
   if(topics1.includes(topic)){
     topicObj = {topic,obj,count};
     mqttArr.push(topicObj);
@@ -36,10 +32,12 @@ client.on('message', function(topic, msg) {
   }
 
   newObj = JSON.parse(msg.toString());
+
   for(let i=0; i<mqttArr.length; i++){
     if(mqttArr[i].topic == topic){
       count[i]= period;
       mqttArr[i].obj.fc = newObj.fc;
+      mqttArr[i].alert = newObj.alert;
       mqttArr[i].obj.fl = newObj.fl;
       mqttArr[i].count = count[i];
     }
@@ -59,10 +57,7 @@ client.on('message', function(topic, msg) {
       
        });
      }
-     //mqttArr[i].count=mqttArr[i].count+1;
    }
-  //close the database connection
-  //db.close();
 })
 client.on("error", function(error) {
 console.log("ERROR: ", error);
@@ -78,23 +73,22 @@ function isEmpty(object) {
 //Unsubscrbing a topic
 setInterval(function(){
   for(let i=0; i<mqttArr.length; i++){
-    //mqttArr[i].obj = {};
-        //if(isEmpty(obj))
-          mqttArr[i].count=mqttArr[i].count-1;
-          count[i]=mqttArr[i].count;
-          console.log(mqttArr[i].topic+" "+mqttArr[i].count);
-          if(mqttArr[i].count==0){ //If obd device will not send data for 30sec
-            console.log("Unsubscribed: "+mqttArr[i].topic);
-            topics = topics.filter(item => item !== mqttArr[i].topic)
-            client.unsubscribe(mqttArr[i].topic);
-            mqttArr.splice(i,1);
-            console.log(mqttArr);
-          }
+      mqttArr[i].count=mqttArr[i].count-1;
+      count[i]=mqttArr[i].count;
+      console.log(mqttArr[i].topic+" "+mqttArr[i].count);
+      if(mqttArr[i].count==0){ //If obd device will not send data for 30sec
+        console.log("Unsubscribed: "+mqttArr[i].topic);
+        topics = topics.filter(item => item !== mqttArr[i].topic)
+        client.unsubscribe(mqttArr[i].topic);
+        mqttArr.splice(i,1);
+        //console.log(mqttArr);
+      }
     }
 },1000)
 
 //Post req for subscrbing the topic
 router.post('/', (req, res) => {
+  obj = {};
   let sql = `SELECT topic FROM user WHERE VIN = ?`;
   let vin = req.body.VIN;
   db.get(sql, [vin], (err, row) => {
@@ -112,7 +106,6 @@ router.post('/', (req, res) => {
     }
     else{
       topics.push(row.TOPIC);
-      //client.subscribe(topics);
       topics1 = topics;
       console.log(topics);
     }
@@ -123,7 +116,20 @@ router.post('/', (req, res) => {
         this[i] = period;
       }
     };
-    count.setPeriod();
+    count.setPeriod();  
+    if(topics1.includes(row.TOPIC)){
+      let topic = row.TOPIC;
+      topicObj = {topic,obj,count,alert};
+      mqttArr.push(topicObj);
+      for(let i=0; i<mqttArr.length; i++){
+        if(mqttArr[i].topic == row.TOPIC){
+          mqttArr[i].count = period;
+        }
+      }
+      console.log(mqttArr);
+      topics1 = topics1.filter(item => item !== topic)
+    }
+    //console.log(mqttArr);
     res.status(200).send("topic found");
   });
 });

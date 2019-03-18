@@ -22,7 +22,8 @@ router.get('/', (req, res) => {
   let query = [req.query.name,req.query.phone,req.query.mail,req.query.rfid,
     req.query.address,req.query.vin,req.query.mac,req.query.topic,
     req.query.active,req.query.vt,req.query.ft,req.query.fl,req.query.fc,
-    req.query.milage,req.query.dc,req.query.du,req.query.con];
+    req.query.milage,req.query.dc,req.query.du,req.query.con,req.query.ctemp,
+    req.query.maf,req.query.speed,req.query.rpm];
   Array.prototype.checkAll = function(v) {
     var i, n = this.length;
     for (i = 0; i < n; ++i) {
@@ -68,13 +69,22 @@ router.get('/', (req, res) => {
         res[i]='du';
       if(arr[i]==16)
         res[i]='con';
+      if(arr[i]==17)
+        res[i]='con';
+      if(arr[i]==18)
+        res[i]='con';
+      if(arr[i]==19)
+        res[i]='con';
+      if(arr[i]==20)
+        res[i]='con';
     }
     return res;
   }
 
   if(query[0] || query[1] || query[2] || query[3]|| query[4] || query[5]||query[6]
     || query[7] || query[8] || query[9] || query[10] || query[11] || query[12] || 
-    query[13] || query[14] || query[15] || query[16]){
+    query[13] || query[14] || query[15] || query[16]|| query[17]|| query[18]|| query[19]
+    || query[20]){
     
     for(let i=0;i<=16;i++){
       if(query[i]!=null){
@@ -87,8 +97,8 @@ router.get('/', (req, res) => {
     let placeholders = b.map((value) => value+' = ? ').join('AND ');
     let sql = `SELECT CustomerId id,CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,
     topic,ACTIVE,VEHICLE_TYPE vt,FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,
-    MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con FROM 
-    user WHERE ${placeholders}COLLATE NOCASE`;
+    MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con,COOLANT_TEMP ctemp,
+    MAF,SPEED,RPM FROM user WHERE ${placeholders}COLLATE NOCASE`;
     console.log(sql);
     console.log(data);
     db.all(sql, data, (err, rows) => {
@@ -105,7 +115,8 @@ router.get('/', (req, res) => {
         {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.TOPIC},
         {'Active State':row.ACTIVE},{'Vehicle type':row.vt},{'Fuel type':row.ft},{'Fuel Level':row.fl},
         {'Fuel capacity':row.fc},{'Milage':row.MILAGE},{'DateOfCreation':row.dc},{'DateOfUpdation':row.du},
-        {'OtherData':row.od},{'CompanyName':row.con});
+        {'OtherData':row.od},{'CompanyName':row.con},{'Mass Air flow':row.MAF},
+        {'SPEED':row.SPEED},{'Coolant Temperature':row.ctemp},{'RPM':row.RPM});
           x.push(rowObj);
           });
           res.send(x);
@@ -114,8 +125,8 @@ router.get('/', (req, res) => {
   else {
   let sql = `SELECT CustomerId id,CustomerName cn,PHONE ph,EMAIL mail,RFID,ADDRESS ad,VIN,MAC,
   topic,ACTIVE,VEHICLE_TYPE vt,FUEL_TYPE ft,FUEL_LEVEL fl,FUEL_CAPACITY fc,
-  MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con 
-  FROM user`;
+  MILAGE,DateOfCreation dc,DateOfUpdation du,OtherData od,CompanyName con,COOLANT_TEMP ctemp,
+  MAF,SPEED,RPM FROM user`;
     db.all(sql, [], (err, rows) => {
       if (err) {
         res.status(400).json({"error":err.message});
@@ -126,7 +137,8 @@ router.get('/', (req, res) => {
     {'mail':row.mail},{'Rfid':row.RFID},{'Address':row.ad},{'VIN':row.VIN},{'MAC':row.MAC},{'TOPIC':row.TOPIC},
     {'Active State':row.ACTIVE},{'Vehicle type':row.vt},{'Fuel type':row.ft},{'Fuel Level':row.fl},
     {'Fuel capacity':row.fc},{'Milage':row.MILAGE},{'DateOfCreation':row.dc},{'DateOfUpdation':row.du},
-    {'OtherData':row.od},{'CompanyName':row.con});
+    {'OtherData':row.od},{'CompanyName':row.con},{'Mass Air flow':row.MAF},{'SPEED':row.SPEED}
+    ,{'Coolant Temperature':row.ctemp},{'RPM':row.RPM});
       x.push(rowObj);
       });
       res.send(x);
@@ -160,25 +172,30 @@ router.get('/:id', (req, res) => {
 //Add user
 router.post('/', (req, res) => {
     db.run(`CREATE TABLE IF NOT EXISTS user(  
-      [CustomerId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,  
-      [CustomerName] VARCHAR(50) NOT NULL,
+    [CustomerId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,  
+    [CustomerName] VARCHAR(50) NOT NULL,
+    CompanyName VARCHAR(50) NULL,
     [PHONE] VARCHAR(50) NOT NULL UNIQUE,
     [EMAIL] VARCHAR(50) NULL,
     [ADDRESS] VARCHAR(50) NOT NULL,
     [RFID] INTEGER NOT NULL UNIQUE,
-      [VIN] INTEGER  NOT NULL, 
+    [VIN] INTEGER  NOT NULL, 
     [MAC] VARCHAR(50) NOT NULL,
-      [TOPIC] VARCHAR(50) NOT NULL UNIQUE,
+    [TOPIC] VARCHAR(50) NOT NULL UNIQUE,
     [ACTIVE] INT NOT NULL,
-      [VEHICLE_TYPE] VARCHAR(50) NOT NULL,
+    [VEHICLE_TYPE] VARCHAR(50) NOT NULL,
     [FUEL_TYPE] VARCHAR(50) NOT NULL,
-    [FUEL_LEVEL] VARCHAR(50) NOT NULL,
-    [FUEL_CAPACITY] VARCHAR(50) NOT NULL,
-    [MILAGE] DECIMAL(5,2) NOT NULL,
-      [DateOfCreation] DATETIME NOT NULL,
+    [FUEL_LEVEL] VARCHAR(50) NULL,
+    [TANK_CAPACITY] VARCHAR(50) NULL,
+    [RPM] VARCHAR(50) NULL,
+    [SPEED] VARCHAR(50) NULL,
+    [MAF] VARCHAR(50) NULL,
+    [COOLANT_TEMP] VARCHAR(50) NULL,
+    [MILAGE] DECIMAL(5,2) NULL,
+    [DateOfCreation] DATETIME NOT NULL,
     [DateOfUpdation] DATETIME NOT NULL,
-    [OtherData] VARCHAR(200) NULL,
-    CompanyName VARCHAR(50) NULL
+    [OtherData1] VARCHAR(50) NULL,
+    [OtherData2] VARCHAR(50) NULL
   )`,(err)=>{
     if(err){
       console.log(err.message);
