@@ -26,6 +26,6 @@ app.use(function(req, res){
     res.status(404).send({"msg":"404 NOT FOUND"});
   });
 
-const port = process.env.PORT || 2000;
+const port = process.env.PORT || 5000;
 
-app.listen(2000, '0.0.0.0');
+app.listen(3000, '0.0.0.0');
