@@ -17,79 +17,81 @@ let options = {
   "protocolVersion": 4
 }
 var client  = mqtt.connect('mqtt://127.0.0.1',options)
-
+function testJSON(text){
+  if (typeof text!=="string"){
+      return false;
+  }
+  try{
+      JSON.parse(text);
+      return true;
+  }
+  catch (error){
+      return false;
+  }
+}
 client.on('connect', function () {
   //console.log("Server connected to the Mqtt Broker");    
 })
 client.on('message', function(topic, msg) {
 
-  //client.publish(topics,"",{ retain:true, qos:1});    //Clear the retained msg
-  //console.log(msg.toString());
+  let msg1 = msg.toString();
+  if(testJSON(msg1)){
+    let obj = JSON.parse(msg.toString());
+    if(topics1.includes(topic)){
+      topicObj = {topic,obj,count};
+      mqttArr.push(topicObj);
+      topics1 = topics1.filter(item => item !== topic)
+    }
 
-  let obj = JSON.parse(msg.toString());
-  //console.log(obj.fl);
+    newObj = JSON.parse(msg.toString());
+    for(let i=0; i<mqttArr.length; i++){
+      if(mqttArr[i].topic == topic){
+        count[i]= period;
+        mqttArr[i].obj.fc = newObj.fc;
+        mqttArr[i].obj.fl = newObj.fl;
+        mqttArr[i].count = count[i];
+      }
+    }
+    console.log(mqttArr);
 
-  if(topics1.includes(topic)){
-    topicObj = {topic,obj,count};
-    mqttArr.push(topicObj);
-    topics1 = topics1.filter(item => item !== topic)
-  }
-
-  newObj = JSON.parse(msg.toString());
-  for(let i=0; i<mqttArr.length; i++){
-    if(mqttArr[i].topic == topic){
-      count[i]= period;
-      mqttArr[i].obj.fc = newObj.fc;
-      mqttArr[i].obj.fl = newObj.fl;
-      mqttArr[i].count = count[i];
+    let sql = `UPDATE user
+                SET FUEL_CAPACITY = ?,FUEL_LEVEL = ?
+                WHERE topic = ?`;
+    for(let i=0; i<mqttArr.length; i++){
+      if(mqttArr[i].topic == topic){
+        db.run(sql,[mqttArr[i].obj.fc,mqttArr[i].obj.fl,topic], function(err) {
+          if (err) {
+            return console.error(err.message);
+          }
+          console.log(`Row(s) updated: ${this.changes}`);
+        
+        });
+      }
     }
   }
-  console.log(mqttArr);
-
-  let sql = `UPDATE user
-              SET FUEL_CAPACITY = ?,FUEL_LEVEL = ?
-              WHERE topic = ?`;
-  for(let i=0; i<mqttArr.length; i++){
-    if(mqttArr[i].topic == topic){
-      db.run(sql,[mqttArr[i].obj.fc,mqttArr[i].obj.fl,topic], function(err) {
-        if (err) {
-          return console.error(err.message);
-        }
-        console.log(`Row(s) updated: ${this.changes}`);
-      
-       });
-     }
-     //mqttArr[i].count=mqttArr[i].count+1;
-   }
+  else{
+    console.log("send the mqtt msg as JSON string");
+  }
   //close the database connection
   //db.close();
 })
 client.on("error", function(error) {
 console.log("ERROR: ", error);
 });
-function isEmpty(object) {
-  for(var key in object){
-      if(object.hasOwnProperty(key))
-          return false;
-  }
-  return true;
-}
 
 //Unsubscrbing a topic
 setInterval(function(){
   for(let i=0; i<mqttArr.length; i++){
-    //mqttArr[i].obj = {};
-        //if(isEmpty(obj))
-          mqttArr[i].count=mqttArr[i].count-1;
-          count[i]=mqttArr[i].count;
-          console.log(mqttArr[i].topic+" "+mqttArr[i].count);
-          if(mqttArr[i].count==0){ //If obd device will not send data for 30sec
-            console.log("Unsubscribed: "+mqttArr[i].topic);
-            topics = topics.filter(item => item !== mqttArr[i].topic)
-            client.unsubscribe(mqttArr[i].topic);
-            mqttArr.splice(i,1);
-            console.log(mqttArr);
-          }
+      mqttArr[i].count=mqttArr[i].count-1;
+      count[i]=mqttArr[i].count;
+      console.log(mqttArr[i].topic+" "+mqttArr[i].count);
+      if(mqttArr[i].count==0){ 
+        console.log("Unsubscribed: "+mqttArr[i].topic);
+        topics = topics.filter(item => item !== mqttArr[i].topic)
+        client.unsubscribe(mqttArr[i].topic);
+        mqttArr.splice(i,1);
+        console.log(mqttArr);
+      }
     }
 },1000)
 
@@ -107,6 +109,7 @@ router.post('/', (req, res) => {
       return;
     }
     client.subscribe(row.TOPIC);
+    client.publish(row.TOPIC,null,{ retain:true});    //Clear the retained msg
     if(topics.includes(row.TOPIC)){
       console.log(topics);
     }
