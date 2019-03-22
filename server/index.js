@@ -12,20 +12,20 @@ app.use(cors());
 
 const registration = require('./routes/api/registration');
 const existingUser = require('./routes/api/existingUser1');
-const test = require('./routes/api/test');
-const entry = require('./routes/api/entry');
+
 
 app.use('/api/registration',registration);
-//app.use('/api/test',test);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/',entry);
 app.use('/existing',existingUser);
+app.get('/alerts',function(req,res){
+  res.send(existingUser.alert);
+});
 
 // Default response for any other request
 app.use(function(req, res){
     res.status(404).send({"msg":"404 NOT FOUND"});
-  });
+});
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 2000;
 
-app.listen(3000, '0.0.0.0');
+app.listen(port, '0.0.0.0');

@@ -1,23 +1,14 @@
 const express = require('express');
 var db = require('../../db');
 const router = express.Router();
-
-// function rowObj(row){
-//   var x=[];
-//   var rowObj = Object.assign({},[row.cn,row.ph,row.mail,row.RFID,row.ad,row.VIN,
-//     row.MAC,row.TOPIC,row.ACTIVE,row.vt,row.ft,row.fl,row.fc,row.MILAGE,row.dc,
-//     row.du,row.od,row.con,row.CTEMP,row.MAF,row.RPM,row.SPEED]);
-//   x.push(rowObj);
-//   return x;
-// }
-//Get post
-
+let currentDt = new Date().toLocaleString();
+let updatedDt;
+ /* Returns all users registred with our System   */
 router.get('/', (req, res) => {
   var x=[];
   let a=[];
   let b = [];
-  let data = [];
-  var y = [];
+  let data = [];     //data carry the fields(columns) which should be passed for different sql query
   let j=0;
   let query = [req.query.name,req.query.phone,req.query.mail,req.query.address,
     req.query.rfid,req.query.reg_num,req.query.vin,req.query.mac,
@@ -32,7 +23,8 @@ router.get('/', (req, res) => {
         }
     }
   };
-  function getSqlQuery(arr){
+  //This function will returns the equivalent naming of different columns of DB mentioned below in the sql variable
+  function getSqlQuery(arr){   
     let res = [];
     for(let i=0;i<arr.length;i++){
       if(arr[i]==0)
@@ -152,7 +144,7 @@ router.get('/', (req, res) => {
   }
 });
 
-//Get user by id
+/** Get a user registred by passing the userId */
 router.get('/:id', (req, res) => {
   var x=[];
   let CustomerId = req.params.id;
@@ -180,8 +172,10 @@ router.get('/:id', (req, res) => {
 });
 
 
-//Add user
+/* Add a user in the database */
 router.post('/', (req, res) => {
+  updatedDt = new Date().toLocaleString();
+
     db.run(`CREATE TABLE IF NOT EXISTS user(  
     [CustomerId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,  
     [CustomerName] VARCHAR(50) NOT NULL,
@@ -214,11 +208,10 @@ router.post('/', (req, res) => {
       //   console.log("table created successfully");
       // }
     });
-  // i++;
   let records = [req.body.CustomerName,req.body.PHONE, req.body.EMAIL,req.body.ADDRESS,
     req.body.RFID,req.body.REG_NUM,req.body.VIN,req.body.MAC,
-    req.body.VEHICLE_MAKE,req.body.FUEL_TYPE,req.body.IS_OBD,new Date().toLocaleString(),
-    new Date().toLocaleString(),req.body.FUEL_LEVEL,req.body.TANK_CAPACITY,
+    req.body.VEHICLE_MAKE,req.body.FUEL_TYPE,req.body.IS_OBD,currentDt,
+    updatedDt,req.body.FUEL_LEVEL,req.body.TANK_CAPACITY,
     req.body.RPM,req.body.SPEED,req.body.MAF,req.body.COOLANT_TEMP,req.body.MILAGE,
     req.body.OtherData1,req.body.OtherData2];
     let placeholders = records.map((value) => '?').join(',');
@@ -245,14 +238,16 @@ router.post('/', (req, res) => {
     //db.close();
 });
 
-//Edit user by id
+/* Edit user by id */
 router.put('/edit/:id', (req, res) => {
 
   let j=0;
-  let data=[];
+  let data=[];   //data carry the fields which should be passed for different sql query
   let a=[];
   let b=[];
-  function getSqlQuery(arr){
+  updatedDt = new Date().toLocaleString();
+//This function will return the exact nomenclature of different field in the DB for different query string
+  function getSqlQuery(arr){   
     let res = [];
     for(let i=0;i<arr.length;i++){
       if(arr[i]==0)
@@ -302,11 +297,11 @@ router.put('/edit/:id', (req, res) => {
     }
     return res;
   }
-
+//'query' is the array of all query parameter
   let query=[req.body.CustomerName,req.body.PHONE, req.body.EMAIL,req.body.ADDRESS,
     req.body.RFID,req.body.REG_NUM,req.body.VIN,req.body.MAC,
-    req.body.VEHICLE_MAKE,req.body.FUEL_TYPE,req.body.IS_OBD,new Date().toLocaleString(),
-    new Date().toLocaleString(),req.body.FUEL_LEVEL,req.body.TANK_CAPACITY,
+    req.body.VEHICLE_MAKE,req.body.FUEL_TYPE,req.body.IS_OBD,currentDt,
+    updatedDt,req.body.FUEL_LEVEL,req.body.TANK_CAPACITY,
     req.body.RPM,req.body.SPEED,req.body.MAF,req.body.COOLANT_TEMP,req.body.MILAGE,
     req.body.OtherData1,req.body.OtherData2];
     
@@ -320,10 +315,10 @@ router.put('/edit/:id', (req, res) => {
     b = getSqlQuery(a);
     let CustomerId = req.params.id;
     data[j]=CustomerId;
-    let placeholders = b.map((value) => value+' = ? ').join(', ');
-    let sql = 'UPDATE user SET '+placeholders+' WHERE CustomerId = ?';
+    let placeholders = b.map((value) => value+' = ? ').join(', ');   
+    let sql = 'UPDATE user SET '+placeholders+' WHERE CustomerId = ?';  //Sql query for different query string
     console.log(sql);
-    console.log(data);
+    //console.log(data);
     db.run(sql,data, (err) => {
       if (err) {
         res.status(400).json({"error":err.message});
@@ -333,7 +328,7 @@ router.put('/edit/:id', (req, res) => {
   });
 });
 
-//Delete user by id
+/* Delete user by id */
 router.delete('/:id', (req, res) => {
   let CustomerId = req.params.id;
   let sql = `DELETE FROM user WHERE CustomerId = ?`;

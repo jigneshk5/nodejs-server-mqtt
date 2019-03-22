@@ -5,7 +5,7 @@
       "version": "1.0.0",
       "title": "OBD Server API"
     },
-    "host": "localhost:2000",
+    "host": "localhost:2000",   
     "produces": ["application/json"],
     "schemes": [
       "http"
@@ -56,21 +56,30 @@
                 },
                 {
                   "in": "query",
-                  "name": "rfid",
-                  "schema": {
-                    "type": "integer"
-                  },
-                  "required":false,
-                  "description": "Filter by rfid"
-                },
-                {
-                  "in": "query",
                   "name": "address",
                   "schema": {
                     "type": "string"
                   },
                   "required":false,
                   "description": "Filter by address"
+                },
+                {
+                  "in": "query",
+                  "name": "rfid",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by rfid"
+                },
+                {
+                  "in": "query",
+                  "name": "reg_num",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by Registration number aka topic"
                 },
                 {
                   "in": "query",
@@ -92,30 +101,12 @@
                 },
                 {
                   "in": "query",
-                  "name": "topic",
+                  "name": "vm",
                   "schema": {
                     "type": "string"
                   },
                   "required":false,
-                  "description": "Filter by topic"
-                },
-                {
-                  "in": "query",
-                  "name": "active",
-                  "schema": {
-                    "type": "integer"
-                  },
-                  "required":false,
-                  "description": "Filter by active state"
-                },
-                {
-                  "in": "query",
-                  "name": "vt",
-                  "schema": {
-                    "type": "string"
-                  },
-                  "required":false,
-                  "description": "Filter by vehicle type"
+                  "description": "Filter by vehicle Make"
                 },
                 {
                   "in": "query",
@@ -128,39 +119,12 @@
                 },
                 {
                   "in": "query",
-                  "name": "fl",
+                  "name": "isobd",
                   "schema": {
                     "type": "string"
                   },
                   "required":false,
-                  "description": "Filter by fuel level"
-                },
-                {
-                  "in": "query",
-                  "name": "fc",
-                  "schema": {
-                    "type": "string"
-                  },
-                  "required":false,
-                  "description": "Filter by fuel capacity"
-                },
-                {
-                  "in": "query",
-                  "name": "milage",
-                  "schema": {
-                    "type": "string"
-                  },
-                  "required":false,
-                  "description": "Filter by milage"
-                },
-                {
-                  "in": "query",
-                  "name": "du",
-                  "schema": {
-                    "type": "string"
-                  },
-                  "required":false,
-                  "description": "Filter by date of updation"
+                  "description": "Filter by Is Obd"
                 },
                 {
                   "in": "query",
@@ -173,12 +137,93 @@
                 },
                 {
                   "in": "query",
-                  "name": "con",
+                  "name": "du",
                   "schema": {
                     "type": "string"
                   },
                   "required":false,
-                  "description": "Filter by company name"
+                  "description": "Filter by date of updation"
+                },
+                {
+                  "in": "query",
+                  "name": "fl",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by fuel level"
+                },
+                {
+                  "in": "query",
+                  "name": "tc",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by Tank capacity"
+                },
+                {
+                  "in": "query",
+                  "name": "rpm",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by RPM"
+                },
+                {
+                  "in": "query",
+                  "name": "speed",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by speed"
+                },
+                {
+                  "in": "query",
+                  "name": "maf",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by mass air flow"
+                },
+                {
+                  "in": "query",
+                  "name": "ctemp",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by coolant temperature"
+                },
+                {
+                  "in": "query",
+                  "name": "milage",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by milage"
+                },
+                {
+                  "in": "query",
+                  "name": "od1",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by Other data 1"
+                },
+                {
+                  "in": "query",
+                  "name": "od2",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "required":false,
+                  "description": "Filter by Other data 2"
                 }
               ]
             },
@@ -208,7 +253,10 @@
                                 "type": "string"
                               },
                               "RFID":{
-                                "type": "integer"
+                                "type": "string"
+                              },
+                              "REG_NUM":{
+                                "type": "string"
                               },
                               "VIN":{
                                 "type": "string"
@@ -216,25 +264,13 @@
                               "MAC":{
                                 "type": "string"
                               },
-                              "topic":{
-                                "type": "string"
-                              },
-                              "ACTIVE":{
-                                "type": "integer"
-                              },
-                              "VEHICLE_TYPE":{
+                              "VEHICLE_MAKE":{
                                 "type": "string"
                               },
                               "FUEL_TYPE":{
                                 "type": "string"
                               },
-                              "FUEL_LEVEL":{
-                                "type": "string"
-                              },
-                              "FUEL_CAPACITY":{
-                                "type": "string"
-                              },
-                              "MILAGE":{
+                              "IS_OBD":{
                                 "type": "string"
                               },
                               "DateOfCreation":{
@@ -243,29 +279,51 @@
                               "DateOfUpdation":{
                                 "type": "string"
                               },
-                              "OtherData":{
+                              "FUEL_LEVEL":{
                                 "type": "string"
                               },
-                              "CompanyName":{
+                              "TANK_CAPACITY":{
+                                "type": "string"
+                              },
+                              "RPM":{
+                                "type": "string"
+                              },
+                              "SPEED":{
+                                "type": "string"
+                              },
+                              "MAF":{
+                                "type": "string"
+                              },
+                              "COOLANT_TEMP":{
+                                "type": "string"
+                              },
+                              "MILAGE":{
+                                "type": "string"
+                              },
+                              "OtherData1":{
+                                "type": "string"
+                              },
+                              "OtherData2":{
                                 "type": "string"
                               }
                             },
                             "required": [
-                              "CustomerName","PHONE","EMAIL","ADDRESS","RFID","VIN","MAC","topic","ACTIVE",
-                              "VEHICLE_TYPE","FUEL_TYPE","FUEL_LEVEL","FUEL_CAPACITY","MILAGE","DateOfCreation",
-                              "DateOfUpdation","OtherData","CompanyName"
+                              "CustomerName","PHONE","EMAIL","RFID","REG_NUM","VIN","FUEL_TYPE"
                             ]
                           }
                         }
                       }
                   },
               "responses": {
-                "201": {
+                "200": {
                   "description": "Successfully added the user",
                   "schema": {
                     "type": "array",
                     "items": [{}]
                   }
+                },
+                "400": {
+                  "description": "Bad request"
                 }
               }
             }
@@ -283,7 +341,7 @@
                     "description": "ID of the user",
                     "required": true,
                     "schema": {
-                      "type": "integer"
+                      "type": "string"
                     }
                   }
               ],
@@ -306,7 +364,7 @@
                     "description": "ID of the user",
                     "required": true,
                     "schema": {
-                      "type": "integer"
+                      "type": "string"
                     }
                   }
               ],
@@ -330,7 +388,7 @@
                     "description": "ID of the user",
                     "required": true,
                     "schema": {
-                      "type": "integer"
+                      "type": "string"
                     }
                   }
               ],
@@ -355,7 +413,10 @@
                                 "type": "string"
                               },
                               "RFID":{
-                                "type": "integer"
+                                "type": "string"
+                              },
+                              "REG_NUM":{
+                                "type": "string"
                               },
                               "VIN":{
                                 "type": "string"
@@ -363,25 +424,13 @@
                               "MAC":{
                                 "type": "string"
                               },
-                              "topic":{
-                                "type": "string"
-                              },
-                              "ACTIVE":{
-                                "type": "integer"
-                              },
-                              "VEHICLE_TYPE":{
+                              "VEHICLE_MAKE":{
                                 "type": "string"
                               },
                               "FUEL_TYPE":{
                                 "type": "string"
                               },
-                              "FUEL_LEVEL":{
-                                "type": "string"
-                              },
-                              "FUEL_CAPACITY":{
-                                "type": "string"
-                              },
-                              "MILAGE":{
+                              "IS_OBD":{
                                 "type": "string"
                               },
                               "DateOfCreation":{
@@ -390,10 +439,31 @@
                               "DateOfUpdation":{
                                 "type": "string"
                               },
-                              "OtherData":{
+                              "FUEL_LEVEL":{
                                 "type": "string"
                               },
-                              "CompanyName":{
+                              "TANK_CAPACITY":{
+                                "type": "string"
+                              },
+                              "RPM":{
+                                "type": "string"
+                              },
+                              "SPEED":{
+                                "type": "string"
+                              },
+                              "MAF":{
+                                "type": "string"
+                              },
+                              "COOLANT_TEMP":{
+                                "type": "string"
+                              },
+                              "MILAGE":{
+                                "type": "string"
+                              },
+                              "OtherData1":{
+                                "type": "string"
+                              },
+                              "OtherData2":{
                                 "type": "string"
                                 }
                               }
@@ -413,10 +483,80 @@
                     "type": "array",
                     "items": [{}]
                   }
+                },
+                "400": {
+                  "description": "Bad request"
                 }
               }
             }
-          }
-        
+          },
+          "/existing": {
+            "post": {
+              "description": "Hit this api for checking if the topic is already in the database and subscribing to it",
+              "produces": [
+                "application/json"
+              ],
+              "requestBody":{
+                "description": "Post the registration number as the mqtt topic",
+                "content": {
+                    "application/json":
+                    {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                              "REG_NUM":{
+                                "type": "string"
+                              }
+                            }
+                          },
+                        "encoding": {
+                          "payload": {
+                            "contentType": "application/json"
+                          }
+                        }
+                      }
+                    }
+                  },
+              "responses": {
+                "200": {
+                  "description": "Topic found and subscribed"
+                }
+              }
+            }
+          },
+          "/existing/topics": {
+            "get": {
+              "description": "Get all the active topics",
+              "produces": [
+                "application/json"
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully got the subscribed topics",
+                  "schema": {
+                    "type": "array",
+                    "items": [{}]
+                  }
+                }
+              }
+            }
+          },
+          "/alerts": {
+            "get": {
+              "description": "Mqtt data is pushed from different active topics",
+              "produces": [
+                "application/json"
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successfully got the alert message of respective topics",
+                  "schema": {
+                    "type": "array",
+                    "items": [{}]
+                  }
+                }
+              }
+            }
+          }    
     }
   }
