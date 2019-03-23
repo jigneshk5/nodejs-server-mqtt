@@ -9,30 +9,30 @@ Setting up the server: -
 
 2. We are using express, body-parser & cors as the basic package of this server. Now installing all the node packages:
 
-npm install express body-parser cors mqtt sqlite3 swagger-ui-express
+> npm install express body-parser cors mqtt sqlite3 swagger-ui-express
 
 3. In package.json, edit the ‘scripts’ fields with following:
 
 > "start": "node server/index.js"
 
-Create the server folder in the root and make a index.js file in it.
- “Index.js” contain all the important routes to different api’s(end-points).
+4. Create the server folder in the root and make a index.js file in it.
+5. “Index.js” contain all the important routes to different api’s(end-points):-
 
-- ‘/api/registration’:- It contains the CRUD api of the all the users in registration.js file in ‘./routes/api/registration.js’.
+	- ‘/api/registration’:- It contains the CRUD api of the all the users in registration.js file in ‘./routes/api/registration.js’.
 
-- ‘/existing’:- It handles the post request from the OBD device to write vehicle data to the database. It is referenced to existingUser1.js file in ‘./routes/api/existingUser1.js’
+	- ‘/existing’:- It handles the post request from the OBD device to write vehicle data to the database. It is referenced to existingUser1.js file in ‘./routes/api/existingUser1.js’
 
-- ‘/existing/topics’ :- It gives you all the subscribed (or active) topics.
+	- ‘/existing/topics’ :- It gives you all the subscribed (or active) topics.
 
-- ‘/alerts’ :- It gives you all the alert message with their respective registration number (or topics) when it is sent to the server.
+	- ‘/alerts’ :- It gives you all the alert message with their respective registration number (or topics) when it is sent to the server.
 
-- ‘/api-docs’ :- It contains the swagger api documentation of CRUD api created at ‘/api/registration’. It is referenced to swagger.json file in server folder. The swagger doc can be edited from here.
+	- ‘/api-docs’ :- It contains the swagger api documentation of CRUD api created at ‘/api/registration’. It is referenced to swagger.json file in server folder. The swagger doc can be edited from here.
 
-- The index.js is the entry point of the server resides in the “/server” folder. Such that server can be started using:
-
+6. The index.js is the entry point of the server resides in the “/server” folder. Such that server can be started using:
+```
     node server/index.js 
     nodemon server/index.js
-
+```
 7. The ‘registration.js file’ handles all the CRUD api’s in the following manner:-
     - The Get api “/api/registration” returns  all users registered with our System.
 
